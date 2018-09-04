@@ -21,10 +21,8 @@ router.post("/", async (req, res) => {
     if (!user)
       return res.status(404).send("No User found with this email Id...");
 
-    const validPassword = await bcrypt.compare(
-      req.body.password,
-      user.password
-    ); //return a boolean
+    const validPassword = req.body.password === user.password; //return a boolean
+
     const isAdmin = user.roleName === "Admin";
     if (validPassword === false && isAdmin === true)
       return res.status(404).send("Invalid Email/Password...");
@@ -60,14 +58,14 @@ router.post("/appAuth", async (req, res) => {
       return res.status(404).send("No User found with this email Id...");
 
     if (user) {
-      validPassword = await bcrypt.compare(req.body.password, user.password); //return a boolean
+      validPassword = req.body.password === user.password; //return a boolean
       if (validPassword === true) {
         res.send(user);
       }
     }
 
     if (speaker) {
-      validPassword = await bcrypt.compare(req.body.password, speaker.password); //return a boolean
+      validPassword = req.body.password === speaker.password; //return a boolean
       if (validPassword === true) {
         res.send(speaker);
       }
@@ -86,12 +84,12 @@ router.post("/forgotPassword/:email", async (req, res) => {
     if (!user)
       return res.status(404).send("Invalid Email !!! no user registered ..");
 
-    const { password, hashedPassword } = await generatePassword();
+    var password = "ES" + Math.floor(1000 + Math.random() * 9000);
     const result = await Attendee.update(
       { _id: user._id },
       {
         $set: {
-          password: hashedPassword
+          password: password
         }
       }
     );

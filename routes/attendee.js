@@ -54,11 +54,11 @@ router.post("/", async (req, res) => {
     const userExists = await Attendee.findOne({ email: req.body.email });
     const speakerExists = await Speaker.findOne({ email: req.body.email });
     if (userExists || speakerExists)
-      return res.status(404).send("User Already Exists");
-    const { password, hashedPassword } = await generatePassword();
+      return res.status(404).send("Email Id already Exists");
+    var password = "ES" + Math.floor(1000 + Math.random() * 9000);
     const { error } = validateAttendee(req.body);
     if (error) return res.status(404).send(error.details[0].message);
-    req.body.password = hashedPassword;
+    req.body.password = password;
     //req.body.password = password;
     const attendee = new Attendee(
       _.pick(req.body, [
