@@ -1,0 +1,7 @@
+node_modules
+package-lock.json
+public/fonts
+public/img/
+public/index.bundle.js
+public/index.fonts.css
+public/index.styles.css
