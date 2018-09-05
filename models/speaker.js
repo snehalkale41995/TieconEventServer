@@ -45,7 +45,7 @@ function validateSpeaker(speaker) {
     firstName: Joi.string().required(),
     lastName: Joi.string().required(),
     email: Joi.string().required(),
-    //password : Joi.string().required(),
+    password: Joi.string().allow(""),
     contact: Joi.number().required(),
     roleName: Joi.string(),
     attendeeLabel: Joi.string(),

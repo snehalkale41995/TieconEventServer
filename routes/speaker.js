@@ -54,12 +54,10 @@ router.post("/", async (req, res) => {
     const speakerExists = await Speaker.findOne({ email: req.body.email });
     if (userExists || speakerExists)
       return res.status(404).send("Email Id already Exists");
-    var password = "ES" + Math.floor(1000 + Math.random() * 9000);
+
     const { error } = validateSpeaker(req.body);
     if (error) return res.status(404).send(error.details[0].message);
 
-    req.body.password = password;
-    //req.body.password = password;
     const speaker = new Speaker(
       _.pick(req.body, [
         "firstName",
@@ -77,7 +75,7 @@ router.post("/", async (req, res) => {
     );
     let name = req.body.firstName + " " + req.body.lastName;
     const result = await speaker.save();
-    await sendPasswordViaEmail(password, req.body.email, name);
+    await sendPasswordViaEmail(req.body.password, req.body.email, name);
     res.send(result);
   } catch (error) {
     res.send(error.message);

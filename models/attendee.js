@@ -48,7 +48,7 @@ function validateAttendee(attendee) {
     firstName: Joi.string().required(),
     lastName: Joi.string().required(),
     email: Joi.string().required(),
-    //password : Joi.string().required(),
+    password: Joi.string().allow(""),
     contact: Joi.number()
       .min(10)
       .required(),
