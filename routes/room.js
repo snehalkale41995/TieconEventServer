@@ -5,7 +5,9 @@ const { Rooms, validateRoom } = require("../models/room");
 
 router.get("/", async (req, res) => {
   try {
-    const rooms = await Rooms.find().populate("event");
+    const rooms = await Rooms.find()
+      .sort({ roomName: "ascending" })
+      .populate("event");
     res.send(rooms);
   } catch (error) {
     res.send(error.message);
@@ -17,7 +19,7 @@ router.post("/", async (req, res) => {
     _.pick(req.body, [
       "event",
       "roomName",
-      "capacity",
+      "capacity"
       //"bufferCapacity",
       //"availableServices"
     ])
@@ -43,7 +45,7 @@ router.put("/:id", async (req, res) => {
       _.pick(req.body, [
         "event",
         "roomName",
-        "capacity",
+        "capacity"
         //"bufferCapacity",
         //"availableServices"
       ]),
