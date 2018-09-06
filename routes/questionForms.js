@@ -64,6 +64,21 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+//get question form by event id
+router.get("/eventId/:id", async (req, res) => {
+  try {
+    const form = await QuestionForms.find()
+      .where("event")
+      .equals(req.params.id)
+      .populate("event");
+    if (!form)
+      return res.status(404).send("The Form with the given ID was not found.");
+    res.send(form);
+  } catch (error) {
+    res.send(error.message);
+  }
+});
+
 router.delete("/:id", async (req, res) => {
   try {
     const form = await QuestionForms.findByIdAndRemove(req.params.id);
