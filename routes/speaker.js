@@ -56,7 +56,7 @@ router.post("/", async (req, res) => {
       return res.status(404).send("Email Id already Exists");
 
     const { error } = validateSpeaker(req.body);
-    if (error) return res.status(404).send(error.details[0].message);
+    if (error) return res.status(400).send(error.details[0].message);
 
     const speaker = new Speaker(
       _.pick(req.body, [
