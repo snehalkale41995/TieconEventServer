@@ -54,7 +54,7 @@ router.post("/", async (req, res) => {
     const userExists = await Attendee.findOne({ email: req.body.email });
     const speakerExists = await Speaker.findOne({ email: req.body.email });
     if (userExists || speakerExists)
-      return res.status(404).send("Email Id already Exists");
+      return res.status(400).send("Email Id already Exists");
     // var password = "ES" + Math.floor(1000 + Math.random() * 9000);
     const { error } = validateAttendee(req.body);
     if (error) return res.status(404).send(error.details[0].message);
@@ -87,7 +87,7 @@ router.post("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
   try {
     const { error } = validateAttendee(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
+    if (error) return res.status(404).send(error.details[0].message);
 
     const attendee = await Attendee.findByIdAndUpdate(
       req.params.id,
