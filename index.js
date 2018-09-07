@@ -20,6 +20,7 @@ const helpDesk = require("./routes/helpDesk");
 const location = require("./routes/location");
 const sessionTypeList = require("./routes/sessionTypeList");
 const profileList = require("./routes/profileList");
+const homeQueResponse = require("./routes/homeQueResponse");
 
 const cors = require("cors");
 const registration = require("./routes/registrationResponse");
@@ -57,6 +58,8 @@ app.use("/api/location", location);
 app.use("/api/helpdesk", helpDesk);
 app.use("/api/sessionTypeList", sessionTypeList);
 app.use("/api/profileList", profileList);
+app.use("/api/homeQueResponse", homeQueResponse);
+
 const port = process.env.PORT || 3010;
 
 app.listen(port, () => console.log(`Listening on port ${port}...`));
