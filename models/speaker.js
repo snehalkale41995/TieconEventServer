@@ -31,6 +31,7 @@ const Speaker = mongoose.model(
     attendeeLabel: String,
     attendeeCount: Number,
     briefInfo: String,
+    info : String,
     profileImageURL: String,
     event: {
       type: mongoose.Schema.Types.ObjectId,
@@ -51,6 +52,7 @@ function validateSpeaker(speaker) {
     attendeeLabel: Joi.string(),
     attendeeCount: Joi.number(),
     briefInfo: Joi.string().allow(""),
+    info: Joi.string().allow(""),
     profileImageURL: Joi.string().allow(""),
     event: Joi.required()
   };

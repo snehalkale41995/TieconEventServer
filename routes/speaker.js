@@ -69,6 +69,7 @@ router.post("/", async (req, res) => {
         "attendeeLabel",
         "attendeeCount",
         "briefInfo",
+        "info",
         "profileImageURL",
         "event"
       ])
@@ -98,6 +99,7 @@ router.put("/:id", async (req, res) => {
         "attendeeLabel",
         "attendeeCount",
         "briefInfo",
+        "info",
         "profileImageURL",
         "event"
       ]),
