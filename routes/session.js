@@ -13,22 +13,8 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  var session = new Sessions(
-    _.pick(req.body, [
-      "sessionName",
-      "event",
-      "room",
-      "speakers",
-      "volunteers",
-      "description",
-      "sessionType",
-      "sessionCapacity",
-      "startTime",
-      "endTime",
-      "isBreak",
-      "isRegistrationRequired"
-    ])
-  );
+  var session = new Sessions(req.body); 
+  
   try {
     const { error } = validateSession(req.body);
 
@@ -48,22 +34,9 @@ router.put("/:id", async (req, res) => {
     if (error) return res.status(400).send(error.details[0].message);
     const session = await Sessions.findByIdAndUpdate(
       req.params.id,
-      _.pick(req.body, [
-        "sessionName",
-        "event",
-        "speakers",
-        "volunteers",
-        "description",
-        "sessionType",
-        "sessionCapacity",
-        "startTime",
-        "endTime",
-        "isBreak",
-        "isRegistrationRequired"
-      ]),
+      (req.body),
       { new: true }
     );
-
     if (!session)
       return res
         .status(404)
@@ -108,7 +81,10 @@ router.get("/getSessions/:id", async (req, res) => {
   try {
     const sessionList = await Sessions.find()
       .where("event")
-      .equals(req.params.id);
+      .equals(req.params.id)
+      .populate("event")
+      .populate("room")
+      .populate("speakers");
     res.send(sessionList);
   } catch (error) {
     res.send(error.message);

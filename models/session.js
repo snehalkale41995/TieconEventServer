@@ -14,14 +14,15 @@ const Sessions = mongoose.model(
       required: true
     },
     speakers: {
-      type: Array
-      //required : true
+      type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Speaker" }]
     },
     volunteers: {
       type: Array
-      //required : true
     },
-    room: String,
+    room: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Rooms"
+    },
     description: String,
     sessionType: String,
     sessionCapacity: Number,
