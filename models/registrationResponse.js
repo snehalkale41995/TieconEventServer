@@ -4,7 +4,7 @@ const Joi = require("joi");
 const RegistrationResponse = mongoose.model(
   "RegistrationResponse",
   new mongoose.Schema({
-    attendee: {
+    user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Attendee"
     },
@@ -16,8 +16,8 @@ const RegistrationResponse = mongoose.model(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Events"
     },
-    registrationtime: {
-      type: String,
+    registrationTime: {
+      type: Date,
       required: true
     },
     status: {
@@ -29,11 +29,11 @@ const RegistrationResponse = mongoose.model(
 
 function validateRegistrationResponse(registration) {
   const schema = {
-    attendee: Joi.required(),
+    user: Joi.required(),
     session: Joi.required(),
     event: Joi.required(),
     status: Joi.string().required(),
-    registrationtime: Joi.string().required()
+    registrationTime: Joi.date().required()
   };
   return Joi.validate(registration, schema);
 }

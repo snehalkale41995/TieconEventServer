@@ -21,9 +21,8 @@ const location = require("./routes/location");
 const sessionTypeList = require("./routes/sessionTypeList");
 const profileList = require("./routes/profileList");
 const homeQueResponse = require("./routes/homeQueResponse");
-
+const registrationResponse = require("./routes/registrationResponse");
 const cors = require("cors");
-const registration = require("./routes/registrationResponse");
 
 var public = path.join(__dirname, "public");
 app.get("/", function(req, res) {
@@ -44,7 +43,7 @@ app.use("/api/authenticate", authenticate);
 app.use("/api/event", event);
 app.use("/api/session", session);
 app.use("/api/userProfile", userProfile);
-app.use("/api/registration", registration);
+app.use("/api/registrationResponse", registrationResponse);
 app.use("/api/attendee", attendee);
 app.use("/api/speaker", speaker);
 app.use("/api/attendeeCount", attendeeCount);

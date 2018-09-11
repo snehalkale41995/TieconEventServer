@@ -9,9 +9,9 @@ const _ = require("lodash");
 router.get("/", async (req, res) => {
   try {
     const registrations = await RegistrationResponse.find()
-      .populate("attendee", "firstName lastName")
-      .populate("event", "eventName")
-      .populate("session", "sessionName");
+      .populate("user")
+      .populate("event")
+      .populate("session");
     res.send(registrations);
   } catch (error) {
     res.send(error.message);
@@ -25,15 +25,62 @@ router.post("/", async (req, res) => {
 
     const registration = new RegistrationResponse(
       _.pick(req.body, [
-        "attendee",
+        "user",
         "event",
         "session",
-        "registrationtime",
+        "registrationTime",
         "status"
       ])
     );
     const result = await registration.save();
     res.send(result);
+  } catch (error) {
+    res.send(error.message);
+  }
+});
+
+router.put("/:id", async (req, res) => {
+  try {
+    const { error } = validateRegistrationResponse(req.body);
+    if (error) return res.status(404).send(error.details[0].message);
+
+    const registration = await RegistrationResponse.findByIdAndUpdate(
+      req.params.id,
+      _.pick(req.body, [
+        "user",
+        "event",
+        "session",
+        "registrationTime",
+        "status"
+      ]),
+      { new: true }
+    );
+    if (!registration)
+      return res
+        .status(404)
+        .send("The response with the given ID was not found.");
+
+    res.send(registration);
+  } catch (error) {
+    res.send(error.message);
+  }
+});
+
+router.get("/eventId/:id", async (req, res) => {
+  try {
+    const registration = await RegistrationResponse.find()
+      .where("event")
+      .equals(req.params.id)
+      .populate("user")
+      .populate("event")
+      .populate("session");
+    if (!registration)
+      return res
+        .status(404)
+        .send(
+          "The registrationResonse  with the given Event ID was not found."
+        );
+    res.send(registration);
   } catch (error) {
     res.send(error.message);
   }
