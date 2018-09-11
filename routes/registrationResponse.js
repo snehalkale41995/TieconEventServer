@@ -66,11 +66,60 @@ router.put("/:id", async (req, res) => {
   }
 });
 
+//get by eventId
 router.get("/eventId/:id", async (req, res) => {
   try {
     const registration = await RegistrationResponse.find()
       .where("event")
       .equals(req.params.id)
+      .populate("user")
+      .populate("event")
+      .populate("session");
+    if (!registration)
+      return res
+        .status(404)
+        .send(
+          "The registrationResonse  with the given Event ID was not found."
+        );
+    res.send(registration);
+  } catch (error) {
+    res.send(error.message);
+  }
+});
+
+//get by eventId, userId
+router.get("/byUser/:eventId/:userId", async (req, res) => {
+  try {
+    const registration = await RegistrationResponse.find()
+      .where("event")
+      .equals(req.params.eventId)
+      .where("user")
+      .equals(req.params.userId)
+      .populate("user")
+      .populate("event")
+      .populate("session");
+    if (!registration)
+      return res
+        .status(404)
+        .send(
+          "The registrationResonse  with the given Event ID was not found."
+        );
+    res.send(registration);
+  } catch (error) {
+    res.send(error.message);
+  }
+});
+
+//get by eventId, sessionId, userId
+router.get("/bySessionUser/:eventId/:sessionId/:userId", async (req, res) => {
+  try {
+    const registration = await RegistrationResponse.find()
+      .where("event")
+      .equals(req.params.eventId)
+      .where("session")
+      .equals(req.params.sessionId)
+      .where("user")
+      .equals(req.params.userId)
       .populate("user")
       .populate("event")
       .populate("session");
