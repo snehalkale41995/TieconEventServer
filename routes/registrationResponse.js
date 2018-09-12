@@ -11,7 +11,25 @@ router.get("/", async (req, res) => {
     const registrations = await RegistrationResponse.find()
       .populate("user")
       .populate("event")
-      .populate("session");
+      .populate({ 
+        path: 'session',
+        populate: [{
+          path: 'speakers',
+          model: 'Speaker'
+        },
+        {
+          path: 'room',
+          model: 'Rooms'
+        }]
+     })
+     //to populate single child
+      // .populate({
+      //   path: 'session',
+      //   populate: {
+      //       path: 'speakers',
+      //       model: 'Speaker'
+      //   }
+      //  })
     res.send(registrations);
   } catch (error) {
     res.send(error.message);
