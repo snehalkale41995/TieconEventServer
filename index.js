@@ -22,6 +22,8 @@ const sessionTypeList = require("./routes/sessionTypeList");
 const profileList = require("./routes/profileList");
 const homeQueResponse = require("./routes/homeQueResponse");
 const registrationResponse = require("./routes/registrationResponse");
+const sessionFeedback = require("./routes/sessionFeedback");
+
 const cors = require("cors");
 
 var public = path.join(__dirname, "public");
@@ -58,6 +60,7 @@ app.use("/api/helpdesk", helpDesk);
 app.use("/api/sessionTypeList", sessionTypeList);
 app.use("/api/profileList", profileList);
 app.use("/api/homeQueResponse", homeQueResponse);
+app.use("/api/sessionFeedback", sessionFeedback);
 
 const port = process.env.PORT || 3010;
 
