@@ -57,4 +57,27 @@ router.get("/eventId/:id", async (req, res) => {
   }
 });
 
+//get by eventId, sessionId, userId
+router.get("/bySessionUser/:eventId/:sessionId/:userId", async (req, res) => {
+  try {
+    const SessionFeedbackInfo = await SessionFeedback.find()
+      .where("event")
+      .equals(req.params.eventId)
+      .where("session")
+      .equals(req.params.sessionId)
+      .where("user")
+      .equals(req.params.userId)
+      .populate("user")
+      .populate("event")
+      .populate("session");
+    if (!SessionFeedbackInfo)
+      return res
+        .status(404)
+        .send("The SessionFeedbackInfo with the given Event ID was not found.");
+    res.send(SessionFeedbackInfo);
+  } catch (error) {
+    res.send(error.message);
+  }
+});
+
 module.exports = router;
