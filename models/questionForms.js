@@ -9,10 +9,6 @@ const QuestionForms = mongoose.model(
       ref: "Events",
       required: true
     },
-    session: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Sessions"
-    },
     formType: {
       // type: mongoose.Schema.Types.ObjectId,
       // ref : 'FormTypes',
@@ -29,7 +25,6 @@ const QuestionForms = mongoose.model(
 function validateQuestionForm(form) {
   const schema = {
     event: Joi.required(),
-    session: Joi.required(),
     formType: Joi.required(),
     formData: Joi.required()
   };

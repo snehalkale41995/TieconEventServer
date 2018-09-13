@@ -8,9 +8,7 @@ const {
 
 router.get("/", async (req, res) => {
   try {
-    const forms = await QuestionForms.find()
-      .populate("event")
-      .populate("session");
+    const forms = await QuestionForms.find().populate("event");
     res.send(forms);
   } catch (error) {
     res.status(400).send(error.message);
@@ -19,7 +17,7 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   var form = new QuestionForms(
-    _.pick(req.body, ["event", "session", "formType", "formData"])
+    _.pick(req.body, ["event", "formType", "formData"])
   );
   try {
     const { error } = validateQuestionForm(req.body);
@@ -43,7 +41,7 @@ router.put("/:id", async (req, res) => {
 
     const form = await QuestionForms.findByIdAndUpdate(
       req.params.id,
-      _.pick(req.body, ["event", "session", "formType", "formData"]),
+      _.pick(req.body, ["event", "formType", "formData"]),
       { new: true }
     );
 
