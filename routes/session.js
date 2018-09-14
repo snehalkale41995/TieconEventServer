@@ -5,7 +5,9 @@ const { Sessions, validateSession } = require("../models/session");
 
 router.get("/", async (req, res) => {
   try {
-    const sessions = await Sessions.find().populate("event");
+    const sessions = await Sessions.find()
+      .populate("event")
+      .sort({ startTime: "ascending" });
     res.send(sessions);
   } catch (error) {
     res.send(error.message);
@@ -82,7 +84,8 @@ router.get("/getSessions/:id", async (req, res) => {
       .equals(req.params.id)
       .populate("event")
       .populate("room")
-      .populate("speakers");
+      .populate("speakers")
+      .sort({ startTime: "ascending" });
     res.send(sessionList);
   } catch (error) {
     res.send(error.message);
@@ -107,4 +110,3 @@ router.get("/getSessions/:eventId/:speakerId", async (req, res) => {
 });
 
 module.exports = router;
-
