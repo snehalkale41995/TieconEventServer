@@ -48,12 +48,39 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-router.get("/eventId/:id", async (req, res) => {
+//get questions by eventId and sessionId (by questionAskedTime)
+router.get("/byTime/:eventId/:sessionId", async (req, res) => {
   try {
     const SessionQAnswerInfo = await SessionQAnswer.find()
       .where("event")
-      .equals(req.params.id)
-      .populate("user");
+      .equals(req.params.eventId)
+      .where("session")
+      .equals(req.params.sessionId)
+      .populate("user")
+      .sort({ questionAskedTime: "descending" });
+
+    if (!SessionQAnswerInfo)
+      return res
+        .status(404)
+        .send(
+          "The SessionQAnswer Information with the given Event ID was not found."
+        );
+    res.send(SessionQAnswerInfo);
+  } catch (error) {
+    res.send(error.message);
+  }
+});
+
+//get questions by eventId and sessionId (by voteCount)
+router.get("/byVote/:eventId/:sessionId", async (req, res) => {
+  try {
+    const SessionQAnswerInfo = await SessionQAnswer.find()
+      .where("event")
+      .equals(req.params.eventId)
+      .where("session")
+      .equals(req.params.sessionId)
+      .populate("user")
+      .sort({ voteCount: "descending" });
 
     if (!SessionQAnswerInfo)
       return res
