@@ -1,5 +1,7 @@
 const express = require("express");
 const app = express();
+var server = require("http").createServer(app);
+var io = require("socket.io")(server);
 const mongoose = require("mongoose");
 var path = require("path");
 
@@ -23,6 +25,7 @@ const profileList = require("./routes/profileList");
 const homeQueResponse = require("./routes/homeQueResponse");
 const registrationResponse = require("./routes/registrationResponse");
 const sessionFeedback = require("./routes/sessionFeedback");
+const sessionQAnswer = require("./routes/sessionQAnswer");
 
 const cors = require("cors");
 
@@ -31,6 +34,17 @@ app.get("/", function(req, res) {
   res.sendFile(path.join(public, "index.html"));
 });
 app.use("/", express.static(public));
+
+io.on("connection", function(socket) {
+  console.log("************a user connected");
+
+  socket.on("join", function(data) {
+    console.log(data);
+    setTimeout(() => {
+      socket.emit("messages", "Hello from server");
+    }, 3000);
+  });
+});
 
 mongoose
   .connect(
@@ -61,7 +75,9 @@ app.use("/api/sessionTypeList", sessionTypeList);
 app.use("/api/profileList", profileList);
 app.use("/api/homeQueResponse", homeQueResponse);
 app.use("/api/sessionFeedback", sessionFeedback);
+app.use("/api/sessionQAnswer", sessionQAnswer);
 
 const port = process.env.PORT || 3010;
 
-app.listen(port, () => console.log(`Listening on port ${port}...`));
+//app.listen(port, () => console.log(`Listening on port ${port}...`));
+server.listen(port, () => console.log(`Listening on port ${port}...`));
