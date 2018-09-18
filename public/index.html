@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang=en>
 
 <head>
@@ -8,22 +8,15 @@
     <meta name=description content="CoreUI - Open Source Bootstrap Admin Template">
     <meta name=author content="Łukasz Holeczek">
     <meta name=keyword content="Bootstrap,Admin,Template,Open,Source,AngularJS,Angular,Angular2,Angular 2,Angular4,Angular 4,jQuery,CSS,HTML,RWD,Dashboard,React,React.js,Vue,Vue.js">
-    <link rel="shortcut icon" href=img/favicon.png> <title>CoreUI - Open Source Bootstrap Admin Template</title>
+    <link rel="shortcut icon" href=img/favicon.ico>
+    <title>Event Management Application </title>
     <link href="index.fonts.css" rel="stylesheet">
     <link href="index.styles.css" rel="stylesheet">
-    <script src="/socket.io/socket.io.js"></script>
 </head>
 
 <body class="app header-fixed sidebar-fixed aside-menu-fixed aside-menu-hidden">
     <div id=root></div>
     <script type="text/javascript" src="index.bundle.js"></script>
-    <script>
-        var socket = io.connect('http://localhost:3010');
-        socket.on('connect', function (data) {
-            alert("Connected");
-            socket.emit('join', 'Hello World from client');
-        });
-    </script>
 </body>
 
 </html>
