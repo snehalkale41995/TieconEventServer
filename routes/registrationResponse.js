@@ -168,6 +168,25 @@ router.get("/bySessionUser/:eventId/:sessionId/:userId", async (req, res) => {
   }
 });
 
+//get by eventId, sessionId
+router.get("/byEventSession/:eventId/:sessionId", async (req, res) => {
+  try {
+    const registration = await RegistrationResponse.find()
+      .where("event")
+      .equals(req.params.eventId)
+      .where("session")
+      .equals(req.params.sessionId)
+      .populate("user");
+    if (!registration)
+      return res
+        .status(404)
+        .send("The registrationResonse with the given Event ID was not found.");
+    res.send(registration);
+  } catch (error) {
+    res.send(error.message);
+  }
+});
+
 router.delete("/:id", async (req, res) => {
   try {
     const result = await RegistrationResponse.findByIdAndRemove(req.params.id);
