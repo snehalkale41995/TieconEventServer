@@ -64,4 +64,22 @@ router.get("/bySessionEvent/:eventId/:sessionId", async (req, res) => {
   }
 });
 
+//get by sessionId, userId
+router.get("/bySessionUser/:sessionId/:userId", async (req, res) => {
+  try {
+    const attendance = await Attendance.find()
+      .where("session")
+      .equals(req.params.sessionId)
+      .where("userId")
+      .equals(req.params.userId);
+    if (!attendance)
+      return res
+        .status(404)
+        .send("The attendance with the given session ID was not found.");
+    res.send(attendance);
+  } catch (error) {
+    res.send(error.message);
+  }
+});
+
 module.exports = router;
