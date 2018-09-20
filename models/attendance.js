@@ -12,9 +12,11 @@ const Attendance = mongoose.model(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Sessions"
     },
-    attendee: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Attendee"
+    userId: {
+      type: String
+    },
+    userType: {
+      type: String
     },
     scannedBy: {
       type: String,
@@ -31,7 +33,8 @@ function validateAttendance(attendance) {
   const schema = {
     event: Joi.required(),
     session: Joi.required(),
-    attendee: Joi.required(),
+    userId: Joi.required(),
+    userType: Joi.allow(""),
     scannedBy: Joi.string().required(),
     time: Joi.string().required()
   };
