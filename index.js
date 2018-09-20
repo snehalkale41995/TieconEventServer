@@ -23,6 +23,7 @@ const profileList = require("./routes/profileList");
 const homeQueResponse = require("./routes/homeQueResponse");
 const registrationResponse = require("./routes/registrationResponse");
 const sessionFeedback = require("./routes/sessionFeedback");
+const sessionQAnswer = require("./routes/sessionQAnswer");
 
 const cors = require("cors");
 
@@ -61,6 +62,7 @@ app.use("/api/sessionTypeList", sessionTypeList);
 app.use("/api/profileList", profileList);
 app.use("/api/homeQueResponse", homeQueResponse);
 app.use("/api/sessionFeedback", sessionFeedback);
+app.use("/api/sessionQAnswer", sessionQAnswer);
 
 const port = process.env.PORT || 3010;
 
