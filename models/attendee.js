@@ -29,7 +29,7 @@ const Attendee = mongoose.model(
       required: true,
       minlength: 10
     },
-    profiles: Array,
+    profileName: String,
     roleName: String,
     attendeeLabel: String,
     attendeeCount: Number,
@@ -52,7 +52,7 @@ function validateAttendee(attendee) {
     contact: Joi.number()
       .min(10)
       .required(),
-    profiles: Joi.array(),
+    profileName: Joi.string(),
     roleName: Joi.string(),
     attendeeLabel: Joi.string(),
     attendeeCount: Joi.number(),
