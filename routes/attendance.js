@@ -47,6 +47,44 @@ router.delete("/:id", async (req, res) => {
 });
 
 //get by eventId, sessionId
+router.get("/byEvent/:eventId", async (req, res) => {
+  try {
+    const attendance = await Attendance.find()
+      .where("event")
+      .equals(req.params.eventId)
+      .populate("event", "eventName")
+      .populate("session", "sessionName");
+    if (!attendance)
+      return res
+        .status(404)
+        .send("The attendance with the given session ID was not found.");
+    res.send(attendance);
+  } catch (error) {
+    res.send(error.message);
+  }
+});
+
+//get by eventId, sessionId for portal
+router.get("/getByEventSession/:eventId/:sessionId", async (req, res) => {
+  try {
+    const attendance = await Attendance.find()
+      .where("event")
+      .equals(req.params.eventId)
+      .where("session")
+      .equals(req.params.sessionId)
+      .populate("event", "eventName")
+      .populate("session", "sessionName");
+    if (!attendance)
+      return res
+        .status(404)
+        .send("The attendance with the given session ID was not found.");
+    res.send(attendance);
+  } catch (error) {
+    res.send(error.message);
+  }
+});
+
+//get by eventId, sessionId for App
 router.get("/bySessionEvent/:eventId/:sessionId", async (req, res) => {
   try {
     const attendance = await Attendance.find()
