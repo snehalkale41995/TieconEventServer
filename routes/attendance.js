@@ -102,6 +102,23 @@ router.get("/bySessionEvent/:eventId/:sessionId", async (req, res) => {
   }
 });
 
+//get by eventId for App //10oct
+router.get("/byEventId/:eventId", async (req, res) => {
+  try {
+    const attendance = await Attendance.find()
+      .where("event")
+      .equals(req.params.eventId)
+      .populate("session");
+    if (!attendance)
+      return res
+        .status(404)
+        .send("The attendance with the given session ID was not found.");
+    res.send(attendance);
+  } catch (error) {
+    res.send(error.message);
+  }
+});
+
 //get by sessionId, userId
 router.get("/bySessionUser/:sessionId/:userId", async (req, res) => {
   try {
