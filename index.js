@@ -23,6 +23,7 @@ const homeQueResponse = require("./routes/homeQueResponse");
 const registrationResponse = require("./routes/registrationResponse");
 const sessionFeedback = require("./routes/sessionFeedback");
 const sessionQAnswer = require("./routes/sessionQAnswer");
+const appTheme = require("./routes/appTheme");
 
 const cors = require("cors");
 
@@ -61,7 +62,7 @@ app.use("/api/profileList", profileList);
 app.use("/api/homeQueResponse", homeQueResponse);
 app.use("/api/sessionFeedback", sessionFeedback);
 app.use("/api/sessionQAnswer", sessionQAnswer);
-
+app.use("/api/appTheme", appTheme);
 const port = process.env.PORT || 3010;
 
 app.listen(port, () => console.log(`Listening on port ${port}...`));
