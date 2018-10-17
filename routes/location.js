@@ -13,26 +13,35 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  var eventLocationInfo = new EventLocation(
-    _.pick(req.body, [
-      "event",
-      "latitude",
-      "latitudeDelta",
-      "longitude",
-      "longitudeDelta",
-      "address"
-    ])
-  );
-  try {
-    const { error } = validateLocation(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
+  let location = req.body;
+  const googleMapsClient = require("@google/maps").createClient({
+    key: "AIzaSyBdBp-t81WsX3PlSoh15tKWZtjp0b5e7Xs",
+    Promise: Promise
+  });
 
-    eventLocationInfo = await eventLocationInfo.save();
+  googleMapsClient
+    .geocode({ address: req.body.address })
+    .asPromise()
+    .then(response => {
+      let { lat, lang } = response.results[0].geometry.location;
+      location.latitude = lat;
+      location.longitude = lang;
 
-    res.send(eventLocationInfo);
-  } catch (error) {
-    res.send(error.message);
-  }
+      var locationData = new EventLocation(
+        _.pick(location, [
+          "event",
+          "latitude",
+          "latitudeDelta",
+          "longitude",
+          "longitudeDelta",
+          "address"
+        ])
+      );
+      res.send(locationData);
+    })
+    .catch(err => {
+      res.send(err);
+    });
 });
 
 router.put("/:id", async (req, res) => {
