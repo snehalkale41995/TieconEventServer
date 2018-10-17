@@ -124,27 +124,6 @@ function validateLocation(location) {
   return Joi.validate(location, schema);
 }
 
-function getLocationData(location) {
-  const googleMapsClient = require("@google/maps").createClient({
-    key: "AIzaSyBdBp-t81WsX3PlSoh15tKWZtjp0b5e7Xs",
-    Promise: Promise
-  });
-
-  googleMapsClient
-    .geocode({ address: location.address })
-    .asPromise()
-    .then(response => {
-      console.log("response", response);
-      let { lat, lang } = response.results[0].geometry.location;
-      location.latitude = lat;
-      location.longitude = lang;
-      return location;
-    })
-    .catch(err => {
-      return err;
-    });
-}
-
 exports.AboutUs = AboutUs;
 exports.AboutEternus = AboutEternus;
 exports.Helpdesk = Helpdesk;
@@ -153,4 +132,3 @@ exports.validateAboutUs = validateAboutUs;
 exports.validateAboutEternus = validateAboutEternus;
 exports.validateHelpDesk = validateHelpDesk;
 exports.validateLocation = validateLocation;
-exports.getLocationData = getLocationData;

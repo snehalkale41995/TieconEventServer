@@ -1,11 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const _ = require("lodash");
-const {
-  EventLocation,
-  validateLocation,
-  getLocationData
-} = require("../models/staticPages");
+const { EventLocation, validateLocation } = require("../models/staticPages");
 
 router.get("/", async (req, res) => {
   try {
@@ -27,7 +23,6 @@ router.post("/", async (req, res) => {
     .geocode({ address: req.body.address })
     .asPromise()
     .then(response => {
-      console.log("response", response);
       let { lat, lang } = response.results[0].geometry.location;
       location.latitude = lat;
       location.longitude = lang;
@@ -45,7 +40,6 @@ router.post("/", async (req, res) => {
       res.send(locationData);
     })
     .catch(err => {
-      console.log("err", err);
       res.send(err);
     });
 });
