@@ -126,25 +126,23 @@ function validateLocation(location) {
 
 function getLocationData(location) {
   const googleMapsClient = require("@google/maps").createClient({
-    key: "AIzaSyBdBp-t81WsX3PlSoh15tKWZtjp0b5e7Xs"
+    key: "AIzaSyBdBp-t81WsX3PlSoh15tKWZtjp0b5e7Xs",
+    Promise: Promise
   });
 
-  // Geocode an address.
-  googleMapsClient.geocode(
-    {
-      address: "1600 Amphitheatre Parkway, Mountain View, CA"
-    },
-    function(err, response) {
-      if (!err) {
-        let { lat, lang } = response.results[0].geometry.location;
-        location.latitude = lat;
-        location.longitude = lang;
-        return location;
-      } else {
-        return err;
-      }
-    }
-  );
+  googleMapsClient
+    .geocode({ address: location.address })
+    .asPromise()
+    .then(response => {
+      console.log("response", response);
+      let { lat, lang } = response.results[0].geometry.location;
+      location.latitude = lat;
+      location.longitude = lang;
+      return location;
+    })
+    .catch(err => {
+      return err;
+    });
 }
 
 exports.AboutUs = AboutUs;

@@ -17,15 +17,37 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  try {
-    // const { error } = validateLocation(location);
-    //if (error) return res.status(400).send(error.details[0].message);
-    const location = await getLocationData(req.body);
-    // eventLocationInfo = await eventLocationInfo.save();
-    res.send(location);
-  } catch (error) {
-    res.send(error);
-  }
+  let location = req.body;
+  const googleMapsClient = require("@google/maps").createClient({
+    key: "AIzaSyBdBp-t81WsX3PlSoh15tKWZtjp0b5e7Xs",
+    Promise: Promise
+  });
+
+  googleMapsClient
+    .geocode({ address: req.body.address })
+    .asPromise()
+    .then(response => {
+      console.log("response", response);
+      let { lat, lang } = response.results[0].geometry.location;
+      location.latitude = lat;
+      location.longitude = lang;
+
+      var locationData = new EventLocation(
+        _.pick(location, [
+          "event",
+          "latitude",
+          "latitudeDelta",
+          "longitude",
+          "longitudeDelta",
+          "address"
+        ])
+      );
+      res.send(locationData);
+    })
+    .catch(err => {
+      console.log("err", err);
+      res.send(err);
+    });
 });
 
 router.put("/:id", async (req, res) => {
