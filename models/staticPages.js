@@ -98,7 +98,7 @@ function validateAboutUs(about) {
 function validateAboutEternus(about) {
   const schema = {
     info: Joi.string().required(),
-    url: Joi.string().allow(""),
+    url: Joi.string().allow("")
   };
   return Joi.validate(about, schema);
 }
@@ -124,12 +124,35 @@ function validateLocation(location) {
   return Joi.validate(location, schema);
 }
 
+function getLocationData(location) {
+  const googleMapsClient = require("@google/maps").createClient({
+    key: "AIzaSyBdBp-t81WsX3PlSoh15tKWZtjp0b5e7Xs"
+  });
+
+  // Geocode an address.
+  googleMapsClient.geocode(
+    {
+      address: "1600 Amphitheatre Parkway, Mountain View, CA"
+    },
+    function(err, response) {
+      if (!err) {
+        let { lat, lang } = response.results[0].geometry.location;
+        location.latitude = lat;
+        location.longitude = lang;
+        return location;
+      } else {
+        return err;
+      }
+    }
+  );
+}
+
 exports.AboutUs = AboutUs;
 exports.AboutEternus = AboutEternus;
 exports.Helpdesk = Helpdesk;
 exports.EventLocation = EventLocation;
-
 exports.validateAboutUs = validateAboutUs;
 exports.validateAboutEternus = validateAboutEternus;
 exports.validateHelpDesk = validateHelpDesk;
 exports.validateLocation = validateLocation;
+exports.getLocationData = getLocationData;

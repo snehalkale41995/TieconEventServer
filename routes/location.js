@@ -1,7 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const _ = require("lodash");
-const { EventLocation, validateLocation } = require("../models/staticPages");
+const {
+  EventLocation,
+  validateLocation,
+  getLocationData
+} = require("../models/staticPages");
 
 router.get("/", async (req, res) => {
   try {
@@ -13,25 +17,14 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  var eventLocationInfo = new EventLocation(
-    _.pick(req.body, [
-      "event",
-      "latitude",
-      "latitudeDelta",
-      "longitude",
-      "longitudeDelta",
-      "address"
-    ])
-  );
   try {
-    const { error } = validateLocation(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
-
-    eventLocationInfo = await eventLocationInfo.save();
-
-    res.send(eventLocationInfo);
+    // const { error } = validateLocation(location);
+    //if (error) return res.status(400).send(error.details[0].message);
+    const location = await getLocationData(req.body);
+    // eventLocationInfo = await eventLocationInfo.save();
+    res.send(location);
   } catch (error) {
-    res.send(error.message);
+    res.send(error);
   }
 });
 
