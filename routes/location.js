@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const _ = require("lodash");
 const { EventLocation, validateLocation } = require("../models/staticPages");
-const axios = require("axios");
 
 const googleMapKey = "AIzaSyBTef9dZAr0mIU1QdE8YMRZWhL0MN4h1ns";
 
