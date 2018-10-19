@@ -2,6 +2,9 @@ const express = require("express");
 const router = express.Router();
 const _ = require("lodash");
 const { EventLocation, validateLocation } = require("../models/staticPages");
+const axios = require("axios");
+
+const googleMapKey = "AIzaSyBTef9dZAr0mIU1QdE8YMRZWhL0MN4h1ns";
 
 router.get("/", async (req, res) => {
   try {
@@ -15,7 +18,7 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   let location = req.body;
   const googleMapsClient = require("@google/maps").createClient({
-    key: "AIzaSyBdBp-t81WsX3PlSoh15tKWZtjp0b5e7Xs",
+    key: "AIzaSyBTef9dZAr0mIU1QdE8YMRZWhL0MN4h1ns",
     Promise: Promise
   });
 
