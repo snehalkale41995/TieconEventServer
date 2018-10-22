@@ -15,7 +15,7 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   let location = req.body;
   const googleMapsClient = require("@google/maps").createClient({
-    key: "AIzaSyBfAfFe9YjPmCeJDFwvNEnfGLw6gOC84OI",
+    key: "AIzaSyBQBKlrF8k8WNMtWCO1OJz7E-l7xlm_MpQ",
     Promise: Promise
   });
 
