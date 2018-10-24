@@ -50,36 +50,37 @@ io.on("connection", function(socket) {
 
   socket.on("Myagenda", (eventId, userId) => {
     try {
-    const registration = RegistrationResponse.find()
-      .where("event")
-      .equals(eventId)
-      .where("user")
-      .equals(userId)
-      .populate("user")
-      .populate("event")
-      .populate({
-        path: "session",
-        populate: [
-          {
-            path: "speakers",
-            model: "Speaker"
-          },
-          {
-            path: "room",
-            model: "Rooms"
-          }
-        ]
-      });
-    if (!registration)
-    socket.emit("error", "The registrationResonse  with the given Event ID was not found.");
-   
-    else socket.emit("registration", registration);
-  
-  } catch (error) {
-      socket.emit("error", error.message)
-  }
+      const registration = RegistrationResponse.find()
+        .where("event")
+        .equals(eventId)
+        .where("user")
+        .equals(userId)
+        .populate("user")
+        .populate("event")
+        .populate({
+          path: "session",
+          populate: [
+            {
+              path: "speakers",
+              model: "Speaker"
+            },
+            {
+              path: "room",
+              model: "Rooms"
+            }
+          ]
+        });
+      if (!registration)
+        socket.emit(
+          "error",
+          "The registrationResonse  with the given Event ID was not found."
+        );
+      else socket.emit("registration", registration);
+    } catch (error) {
+      socket.emit("error", error.message);
+    }
+  });
 });
-
 mongoose
   .connect(
     "mongodb://snehal.patil:espl123@ds227171.mlab.com:27171/eventmanagementapp"
