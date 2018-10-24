@@ -26,7 +26,12 @@ const registrationResponse = require("./routes/registrationResponse");
 const sessionFeedback = require("./routes/sessionFeedback");
 const sessionQAnswer = require("./routes/sessionQAnswer");
 const appTheme = require("./routes/appTheme");
+const {
+  RegistrationResponse,
+  validateRegistrationResponse
+} = require("./models/registrationResponse");
 
+const _ = require("lodash");
 const cors = require("cors");
 
 var public = path.join(__dirname, "public");
@@ -42,6 +47,37 @@ io.on("connection", function(socket) {
     console.log("message", message);
     socket.emit("message", message);
   });
+
+  socket.on("Myagenda", (eventId, userId) => {
+    try {
+    const registration = RegistrationResponse.find()
+      .where("event")
+      .equals(eventId)
+      .where("user")
+      .equals(userId)
+      .populate("user")
+      .populate("event")
+      .populate({
+        path: "session",
+        populate: [
+          {
+            path: "speakers",
+            model: "Speaker"
+          },
+          {
+            path: "room",
+            model: "Rooms"
+          }
+        ]
+      });
+    if (!registration)
+    socket.emit("error", "The registrationResonse  with the given Event ID was not found.");
+   
+    else socket.emit("registration", registration);
+  
+  } catch (error) {
+      socket.emit("error", error.message)
+  }
 });
 
 mongoose
