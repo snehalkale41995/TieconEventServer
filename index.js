@@ -36,13 +36,11 @@ app.get("/", function(req, res) {
 app.use("/", express.static(public));
 
 io.on("connection", function(socket) {
-  console.log("************a user connected");
+  console.log("A client just joined on", socket.id);
 
-  socket.on("join", function(data) {
-    console.log(data);
-    setTimeout(() => {
-      socket.emit("messages", "Hello from server");
-    }, 3000);
+  socket.on("message", message => {
+    console.log("message", message);
+    socket.emit("message", message);
   });
 });
 
