@@ -47,39 +47,6 @@ io.on("connection", function(socket) {
     console.log("message", message);
     socket.emit("message", message);
   });
-
-  socket.on("Myagenda", (eventId, userId) => {
-    try {
-      const registration = RegistrationResponse.find()
-        .where("event")
-        .equals(eventId)
-        .where("user")
-        .equals(userId)
-        .populate("user")
-        .populate("event")
-        .populate({
-          path: "session",
-          populate: [
-            {
-              path: "speakers",
-              model: "Speaker"
-            },
-            {
-              path: "room",
-              model: "Rooms"
-            }
-          ]
-        });
-      if (!registration)
-        socket.emit(
-          "error",
-          "The registrationResonse  with the given Event ID was not found."
-        );
-      else socket.emit("registration", registration);
-    } catch (error) {
-      socket.emit("error", error.message);
-    }
-  });
 });
 mongoose
   .connect(
