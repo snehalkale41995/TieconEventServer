@@ -27,7 +27,7 @@ router.post("/", async (req, res) => {
       location.latitude = lat;
       location.longitude = lang;
 
-      var locationData = new EventLocation(
+      var eventLocationInfo = new EventLocation(
         _.pick(location, [
           "event",
           "latitude",
@@ -37,7 +37,8 @@ router.post("/", async (req, res) => {
           "address"
         ])
       );
-      res.send(locationData);
+      const result = eventLocationInfo.save();
+      res.send(result);
     })
     .catch(err => {
       res.send(err);
