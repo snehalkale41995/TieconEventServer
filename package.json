@@ -19,6 +19,8 @@
   },
   "homepage": "https://github.com/snehalPatil29/EventManagementServer#readme",
   "dependencies": {
+    "@google/maps": "^0.5.5",
+    "axios": "^0.18.0",
     "bcrypt": "^2.0.1",
     "cors": "^2.8.4",
     "email-existence": "^0.1.6",

@@ -10,7 +10,6 @@ const authenticate = require("./routes/authentication");
 const attendance = require("./routes/attendance");
 const event = require("./routes/event");
 const session = require("./routes/session");
-const userProfile = require("./routes/userProfile");
 const sponsor = require("./routes/sponsor");
 const room = require("./routes/room");
 const questionForms = require("./routes/questionForms");
@@ -24,6 +23,7 @@ const homeQueResponse = require("./routes/homeQueResponse");
 const registrationResponse = require("./routes/registrationResponse");
 const sessionFeedback = require("./routes/sessionFeedback");
 const sessionQAnswer = require("./routes/sessionQAnswer");
+const appTheme = require("./routes/appTheme");
 
 const cors = require("cors");
 
@@ -45,7 +45,6 @@ app.use(cors());
 app.use("/api/authenticate", authenticate);
 app.use("/api/event", event);
 app.use("/api/session", session);
-app.use("/api/userProfile", userProfile);
 app.use("/api/registrationResponse", registrationResponse);
 app.use("/api/attendee", attendee);
 app.use("/api/speaker", speaker);
@@ -63,7 +62,7 @@ app.use("/api/profileList", profileList);
 app.use("/api/homeQueResponse", homeQueResponse);
 app.use("/api/sessionFeedback", sessionFeedback);
 app.use("/api/sessionQAnswer", sessionQAnswer);
-
+app.use("/api/appTheme", appTheme);
 const port = process.env.PORT || 3010;
 
 app.listen(port, () => console.log(`Listening on port ${port}...`));

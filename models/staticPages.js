@@ -98,7 +98,7 @@ function validateAboutUs(about) {
 function validateAboutEternus(about) {
   const schema = {
     info: Joi.string().required(),
-    url: Joi.string().allow(""),
+    url: Joi.string().allow("")
   };
   return Joi.validate(about, schema);
 }
@@ -128,7 +128,6 @@ exports.AboutUs = AboutUs;
 exports.AboutEternus = AboutEternus;
 exports.Helpdesk = Helpdesk;
 exports.EventLocation = EventLocation;
-
 exports.validateAboutUs = validateAboutUs;
 exports.validateAboutEternus = validateAboutEternus;
 exports.validateHelpDesk = validateHelpDesk;

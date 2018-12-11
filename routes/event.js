@@ -14,9 +14,12 @@ const {
 } = require("../models/staticPages");
 const { Speaker } = require("../models/speaker");
 const { Sponsors } = require("../models/sponsor");
-const { UserProfiles } = require("../models/userProfile");
+
 const { QuestionForms } = require("../models/questionForms");
 const { RegistrationResponse } = require("../models/registrationResponse");
+const { HomeQueResponse } = require("../models/homeQueResponse");
+const { SessionFeedback } = require("../models/sessionFeedback");
+const { SessionQAnswer } = require("../models/sessionQAnswer");
 
 router.get("/", async (req, res) => {
   try {
@@ -103,9 +106,12 @@ router.delete("/:id", async (req, res) => {
     await QuestionForms.deleteMany({ event: req.params.id }); // , questionForms ,
     await Speaker.deleteMany({ event: req.params.id }); // speakers ,
     await Sponsors.deleteMany({ event: req.params.id }); //, ,sponsors
-    await UserProfiles.deleteMany({ event: req.params.id }); // profiles
     await RegistrationResponse.deleteMany({ event: req.params.id }); // registrationResponse  ,
     await AttendeeCounts.deleteMany({ event: req.params.id });
+    await HomeQueResponse.deleteMany({ event: req.params.id });
+    await SessionFeedback.deleteMany({ event: req.params.id });
+    await SessionQAnswer.deleteMany({ event: req.params.id });
+
     res.send(event);
   } catch (error) {
     res.send(error.message);
