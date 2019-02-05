@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
 const nodemailer = require("nodemailer");
-const bcrypt = require("bcrypt");
+// const bcrypt = require("bcrypt");
 const generator = require("generate-password");
 
 const Speaker = mongoose.model(
@@ -71,15 +71,15 @@ function validateAuthUser(user) {
   return Joi.validate(user, schema);
 }
 
-async function generatePassword() {
-  let password = await generator.generate({
-    length: 6,
-    numbers: true
-  });
-  const salt = await bcrypt.genSalt(10);
-  let hashedPassword = await bcrypt.hash(password, salt);
-  return { password: password, hashedPassword: hashedPassword };
-}
+// async function generatePassword() {
+//   let password = await generator.generate({
+//     length: 6,
+//     numbers: true
+//   });
+//   const salt = await bcrypt.genSalt(10);
+//   let hashedPassword = await bcrypt.hash(password, salt);
+//   return { password: password, hashedPassword: hashedPassword };
+// }
 
 async function sendPasswordViaEmail(password, email, name) {
   var transporter = nodemailer.createTransport({
@@ -108,5 +108,5 @@ async function sendPasswordViaEmail(password, email, name) {
 exports.Speaker = Speaker;
 exports.validateSpeaker = validateSpeaker;
 exports.validateAuthUser = validateAuthUser;
-exports.generatePassword = generatePassword;
+// exports.generatePassword = generatePassword;
 exports.sendPasswordViaEmail = sendPasswordViaEmail;
