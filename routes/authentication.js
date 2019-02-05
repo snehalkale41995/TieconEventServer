@@ -8,7 +8,7 @@ const {
 } = require("../models/attendee");
 const { Speaker } = require("../models/speaker");
 
-const bcrypt = require("bcrypt");
+//const bcrypt = require("bcrypt");
 const generator = require("generate-password");
 
 //authenticate user to portal
