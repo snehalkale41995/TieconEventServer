@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
-
+const path = require("path");
+const multer = require("multer");
 const {
   Attendee,
   validateAttendee,
@@ -10,6 +11,30 @@ const {
 const { Speaker } = require("../models/speaker");
 
 const _ = require("lodash");
+
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+const storage = multer.diskStorage({
+  destination: "./public/",
+  filename: function(req, file, cb) {
+    cb(null, "IMAGE-" +new Date().getSeconds()+req.body.firstName+".jpg");
+  }
+});
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 1024 * 1024 * 5 },
+  fileFilter: fileFilter
+});
+
+// router.post("/upload", upload.single("myfile"), (req, res, next) => {
+//   console.log("File", req.file);
+//   console.log("Body", req.body);
+// });
 
 router.get("/", async (req, res) => {
   try {
@@ -83,7 +108,79 @@ router.post("/", async (req, res) => {
     res.send(error.message);
   }
 });
+router.post("/new",upload.single("profileImageURL"), async (req, res) => {
+  try {
+    const userExists = await Attendee.findOne({ email: req.body.email });
+    const speakerExists = await Speaker.findOne({ email: req.body.email });
+    if (userExists || speakerExists)
+      return res.status(400).send("Email Id already Exists");
+    // var password = "ES" + Math.floor(1000 + Math.random() * 9000);
+    const { error } = validateAttendee(req.body);
+    if (error) return res.status(404).send(error.details[0].message);
 
+    if(req.file){
+      req.body.profileImageURL='http://localhost:3010/'+req.file.filename;
+    }
+
+    const attendee = new Attendee(
+      _.pick(req.body, [
+        "firstName",
+        "lastName",
+        "email",
+        "password",
+        "contact",
+        "profileName",
+        "roleName",
+        "attendeeLabel",
+        "attendeeCount",
+        "briefInfo",
+        "profileImageURL",
+        "event"
+      ])
+    );
+    let name = req.body.firstName + " " + req.body.lastName;
+    const result = await attendee.save();
+    await sendPasswordViaEmail(req.body.password, req.body.email, name);
+    res.send(result);
+  } catch (error) {
+    res.send(error.message);
+  }
+});
+router.put("/new/:id",upload.single("profileImageURL"), async (req, res) => {
+  try {
+    const { error } = validateAttendee(req.body);
+    if (error) return res.status(404).send(error.details[0].message);
+    if(req.file){
+      req.body.profileImageURL='http://localhost:3010/'+req.file.filename;
+    }
+    const attendee = await Attendee.findByIdAndUpdate(
+      req.params.id,
+      _.pick(req.body, [
+        "firstName",
+        "lastName",
+        "email",
+        "contact",
+        "profileName",
+        "roleName",
+        "attendeeLabel",
+        "attendeeCount",
+        "briefInfo",
+        "profileImageURL",
+        "event"
+      ]),
+      { new: true }
+    );
+
+    if (!attendee)
+      return res
+        .status(404)
+        .send("The attendee Information with the given ID was not found.");
+
+    res.send(attendee);
+  } catch (error) {
+    res.send(error.message);
+  }
+});
 router.put("/:id", async (req, res) => {
   try {
     const { error } = validateAttendee(req.body);
