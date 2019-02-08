@@ -108,6 +108,23 @@ router.post("/", async (req, res) => {
     res.send(error.message);
   }
 });
+
+router.post("/inform", async (req, res) => {
+  console.log(req.body)
+  try {
+    
+    if(req.body.password && req.body.email){
+      let name = req.body.firstName + " " + req.body.lastName;
+      await sendPasswordViaEmail(req.body.password, req.body.email, name);
+      res.status(200).send('Success');
+    }else{
+      res.status(404).send('Email not provided..');
+    }
+
+  } catch (error) {
+    res.send(error.message);
+  }
+});
 router.post("/new",upload.single("profileImageURL"), async (req, res) => {
   try {
     const userExists = await Attendee.findOne({ email: req.body.email });
@@ -119,7 +136,8 @@ router.post("/new",upload.single("profileImageURL"), async (req, res) => {
     if (error) return res.status(404).send(error.details[0].message);
 
     if(req.file){
-      req.body.profileImageURL='http://localhost:3010/'+req.file.filename;
+      console.log(req.body)
+      req.body.profileImageURL='https://localhost:3010/'+req.file.filename;
     }
 
     const attendee = new Attendee(
