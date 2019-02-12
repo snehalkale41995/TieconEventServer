@@ -180,7 +180,7 @@ router.put("/new/:id", upload.single("profileImageURL"), async (req, res) => {
     const { error } = validateAttendee(req.body);
     if (error) return res.status(404).send(error.details[0].message);
     if (req.file) {
-      req.body.profileImageURL = "http://localhost:3010/" + req.file.filename;
+      req.body.profileImageURL = AppConfig.serverURL + "/" + req.file.filename;
     }
     const attendee = await Attendee.findByIdAndUpdate(
       req.params.id,
