@@ -35,6 +35,9 @@ const Attendee = mongoose.model(
     attendeeCount: Number,
     briefInfo: String,
     profileImageURL: String,
+    facebookProfileURL: String,
+    linkedinProfileURL: String,
+
     event: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Events",
@@ -58,6 +61,8 @@ function validateAttendee(attendee) {
     attendeeCount: Joi.number(),
     briefInfo: Joi.string().allow(""),
     profileImageURL: Joi.string().allow(""),
+    facebookProfileURL:Joi.string().allow(""),
+    linkedinProfileURL:Joi.string().allow(""),
     event: Joi.required()
   };
   return Joi.validate(attendee, schema);
@@ -95,12 +100,12 @@ async function sendPasswordViaEmail(password, email, name) {
   var transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "snehal.eternus@gmail.com",
+      user: "tiecon.eternus@gmail.com",
       pass: "espl@123"
     }
   });
   var mailOptions = {
-    from: "snehal.eternus@gmail.com",
+    from: "tiecon.eternus@gmail.com",
     to: email,
     subject: "Password for User " + name + " for Event management Application",
     html:
@@ -112,7 +117,7 @@ async function sendPasswordViaEmail(password, email, name) {
       password +
       ". Please Login for better experience.</p> <p>Warm Regards,</p><p>Team TieCon</p>"
   };
-
+  //console.log(name,email,password)
   transporter.sendMail(mailOptions);
 }
 
