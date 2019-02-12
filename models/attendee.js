@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
 const nodemailer = require("nodemailer");
-const bcrypt = require("bcrypt");
+// const bcrypt = require("bcrypt");
 const generator = require("generate-password");
 const emailExistence = require("email-existence");
 
@@ -35,6 +35,9 @@ const Attendee = mongoose.model(
     attendeeCount: Number,
     briefInfo: String,
     profileImageURL: String,
+    facebookProfileURL: String,
+    linkedinProfileURL: String,
+
     event: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Events",
@@ -58,6 +61,8 @@ function validateAttendee(attendee) {
     attendeeCount: Joi.number(),
     briefInfo: Joi.string().allow(""),
     profileImageURL: Joi.string().allow(""),
+    facebookProfileURL:Joi.string().allow(""),
+    linkedinProfileURL:Joi.string().allow(""),
     event: Joi.required()
   };
   return Joi.validate(attendee, schema);
@@ -75,15 +80,15 @@ function validateAuthUser(user) {
   return Joi.validate(user, schema);
 }
 
-async function generatePassword() {
-  let password = await generator.generate({
-    length: 6,
-    numbers: true
-  });
-  const salt = await bcrypt.genSalt(10);
-  let hashedPassword = await bcrypt.hash(password, salt);
-  return { password: password, hashedPassword: hashedPassword };
-}
+// async function generatePassword() {
+//   let password = await generator.generate({
+//     length: 6,
+//     numbers: true
+//   });
+//   const salt = await bcrypt.genSalt(10);
+//   let hashedPassword = await bcrypt.hash(password, salt);
+//   return { password: password, hashedPassword: hashedPassword };
+// }
 
 async function validateEmail(email) {
   await emailExistence.check(email, function(error, response) {
@@ -95,12 +100,12 @@ async function sendPasswordViaEmail(password, email, name) {
   var transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "snehal.eternus@gmail.com",
+      user: "tiecon.eternus@gmail.com",
       pass: "espl@123"
     }
   });
   var mailOptions = {
-    from: "snehal.eternus@gmail.com",
+    from: "tiecon.eternus@gmail.com",
     to: email,
     subject: "Password for User " + name + " for Event management Application",
     html:
@@ -112,13 +117,13 @@ async function sendPasswordViaEmail(password, email, name) {
       password +
       ". Please Login for better experience.</p> <p>Warm Regards,</p><p>Team TieCon</p>"
   };
-
+  //console.log(name,email,password)
   transporter.sendMail(mailOptions);
 }
 
 exports.Attendee = Attendee;
 exports.validateAttendee = validateAttendee;
 exports.validateAuthUser = validateAuthUser;
-exports.generatePassword = generatePassword;
+// exports.generatePassword = generatePassword;
 exports.sendPasswordViaEmail = sendPasswordViaEmail;
 exports.validateEmail = validateEmail;

@@ -21,7 +21,6 @@
   "dependencies": {
     "@google/maps": "^0.5.5",
     "axios": "^0.18.0",
-    "bcrypt": "^2.0.1",
     "cors": "^2.8.4",
     "email-existence": "^0.1.6",
     "express": "^4.16.3",
@@ -30,6 +29,7 @@
     "joi": "^13.4.0",
     "lodash": "^4.17.10",
     "mongoose": "^5.2.0",
+    "multer": "^1.4.1",
     "nodemailer": "^4.6.7",
     "nodemon": "^1.17.5",
     "socket.io": "^2.1.1"
