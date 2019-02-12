@@ -22,7 +22,8 @@ const fileFilter = (req, file, cb) => {
 const storage = multer.diskStorage({
   destination: "./public/",
   filename: function(req, file, cb) {
-    cb(null, "IMAGE-" +new Date().getSeconds()+req.body.firstName+".jpg");
+    let dt=new Date();
+    cb(null, "IMAGE_" +dt.getDate()+'-'+dt.getMonth()+'-'+dt.getFullYear()+'_'+req.body.firstName+".jpg");
   }
 });
 const upload = multer({
@@ -110,7 +111,7 @@ router.post("/", async (req, res) => {
 });
 
 router.post("/inform", async (req, res) => {
-  console.log(req.body)
+  //console.log(req.body)
   try {
     
     if(req.body.password && req.body.email){
@@ -136,7 +137,7 @@ router.post("/new",upload.single("profileImageURL"), async (req, res) => {
     if (error) return res.status(404).send(error.details[0].message);
 
     if(req.file){
-      console.log(req.body)
+      //console.log(req.body)
       req.body.profileImageURL='https://localhost:3010/'+req.file.filename;
     }
 
@@ -184,6 +185,8 @@ router.put("/new/:id",upload.single("profileImageURL"), async (req, res) => {
         "attendeeCount",
         "briefInfo",
         "profileImageURL",
+        "facebookProfileURL",
+        "linkedinProfileURL",
         "event"
       ]),
       { new: true }
