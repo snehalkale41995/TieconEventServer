@@ -63,6 +63,6 @@ app.use("/api/homeQueResponse", homeQueResponse);
 app.use("/api/sessionFeedback", sessionFeedback);
 app.use("/api/sessionQAnswer", sessionQAnswer);
 app.use("/api/appTheme", appTheme);
-const port = process.env.PORT || 3011;
+const port = process.env.PORT || 3010;
 
 app.listen(port, () => console.log(`Listening on port ${port}...`));

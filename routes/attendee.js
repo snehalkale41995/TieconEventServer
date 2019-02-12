@@ -11,6 +11,7 @@ const {
 const { Speaker } = require("../models/speaker");
 
 const _ = require("lodash");
+const { AppConfig } = require("../constant/appConfig");
 
 const fileFilter = (req, file, cb) => {
   if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
@@ -22,8 +23,19 @@ const fileFilter = (req, file, cb) => {
 const storage = multer.diskStorage({
   destination: "./public/",
   filename: function(req, file, cb) {
-    let dt=new Date();
-    cb(null, "IMAGE_" +dt.getDate()+'-'+dt.getMonth()+'-'+dt.getFullYear()+'_'+req.body.firstName+".jpg");
+    let dt = new Date();
+    cb(
+      null,
+      "IMAGE_" +
+        dt.getDate() +
+        "-" +
+        dt.getMonth() +
+        "-" +
+        dt.getFullYear() +
+        "_" +
+        req.body.firstName +
+        ".jpg"
+    );
   }
 });
 const upload = multer({
@@ -113,20 +125,18 @@ router.post("/", async (req, res) => {
 router.post("/inform", async (req, res) => {
   //console.log(req.body)
   try {
-    
-    if(req.body.password && req.body.email){
+    if (req.body.password && req.body.email) {
       let name = req.body.firstName + " " + req.body.lastName;
       await sendPasswordViaEmail(req.body.password, req.body.email, name);
-      res.status(200).send('Success');
-    }else{
-      res.status(404).send('Email not provided..');
+      res.status(200).send("Success");
+    } else {
+      res.status(404).send("Email not provided..");
     }
-
   } catch (error) {
     res.send(error.message);
   }
 });
-router.post("/new",upload.single("profileImageURL"), async (req, res) => {
+router.post("/new", upload.single("profileImageURL"), async (req, res) => {
   try {
     const userExists = await Attendee.findOne({ email: req.body.email });
     const speakerExists = await Speaker.findOne({ email: req.body.email });
@@ -136,9 +146,9 @@ router.post("/new",upload.single("profileImageURL"), async (req, res) => {
     const { error } = validateAttendee(req.body);
     if (error) return res.status(404).send(error.details[0].message);
 
-    if(req.file){
+    if (req.file) {
       //console.log(req.body)
-      req.body.profileImageURL='https://localhost:3010/'+req.file.filename;
+      req.body.profileImageURL = AppConfig.serverURL + "/" + req.file.filename;
     }
 
     const attendee = new Attendee(
@@ -165,12 +175,12 @@ router.post("/new",upload.single("profileImageURL"), async (req, res) => {
     res.send(error.message);
   }
 });
-router.put("/new/:id",upload.single("profileImageURL"), async (req, res) => {
+router.put("/new/:id", upload.single("profileImageURL"), async (req, res) => {
   try {
     const { error } = validateAttendee(req.body);
     if (error) return res.status(404).send(error.details[0].message);
-    if(req.file){
-      req.body.profileImageURL='http://localhost:3010/'+req.file.filename;
+    if (req.file) {
+      req.body.profileImageURL = "http://localhost:3010/" + req.file.filename;
     }
     const attendee = await Attendee.findByIdAndUpdate(
       req.params.id,
