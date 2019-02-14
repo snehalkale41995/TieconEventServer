@@ -37,6 +37,7 @@ const Attendee = mongoose.model(
     profileImageURL: String,
     facebookProfileURL: String,
     linkedinProfileURL: String,
+    isEmail:false,
 
     event: {
       type: mongoose.Schema.Types.ObjectId,
@@ -63,6 +64,7 @@ function validateAttendee(attendee) {
     profileImageURL: Joi.string().allow(""),
     facebookProfileURL:Joi.string().allow(""),
     linkedinProfileURL:Joi.string().allow(""),
+    isEmail:Joi.boolean(),
     event: Joi.required()
   };
   return Joi.validate(attendee, schema);
