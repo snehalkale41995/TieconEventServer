@@ -44,11 +44,6 @@ const upload = multer({
   fileFilter: fileFilter
 });
 
-// router.post("/upload", upload.single("myfile"), (req, res, next) => {
-//   console.log("File", req.file);
-//   console.log("Body", req.body);
-// });
-
 router.get("/", async (req, res) => {
   try {
     const attendees = await Attendee.find().populate("event");
@@ -124,7 +119,6 @@ router.post("/", async (req, res) => {
 
 // To send email only
 router.post("/inform", async (req, res) => {
-  //console.log(req.body)
   try {
     if (req.body.password && req.body.email) {
       let name = req.body.firstName + " " + req.body.lastName;
@@ -151,11 +145,11 @@ router.post("/inform", async (req, res) => {
         { new: true }
       );
       if (!attendee)
-      return res
-        .status(404)
-        .send("The attendee Information with the given ID was not found.");
+        return res
+          .status(404)
+          .send("The attendee Information with the given ID was not found.");
 
-    //res.send(attendee);
+      //res.send(attendee);
       res.status(200).send(attendee);
     } else {
       res.status(404).send("Email not provided..");
@@ -177,7 +171,6 @@ router.post("/new", upload.single("profileImageURL"), async (req, res) => {
     if (error) return res.status(404).send(error.details[0].message);
 
     if (req.file) {
-      //console.log(req.body)
       req.body.profileImageURL = AppConfig.serverURL + "/" + req.file.filename;
     }
 

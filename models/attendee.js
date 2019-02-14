@@ -37,7 +37,7 @@ const Attendee = mongoose.model(
     profileImageURL: String,
     facebookProfileURL: String,
     linkedinProfileURL: String,
-    isEmail:false,
+    isEmail: false,
 
     event: {
       type: mongoose.Schema.Types.ObjectId,
@@ -62,9 +62,9 @@ function validateAttendee(attendee) {
     attendeeCount: Joi.number(),
     briefInfo: Joi.string().allow(""),
     profileImageURL: Joi.string().allow(""),
-    facebookProfileURL:Joi.string().allow(""),
-    linkedinProfileURL:Joi.string().allow(""),
-    isEmail:Joi.boolean(),
+    facebookProfileURL: Joi.string().allow(""),
+    linkedinProfileURL: Joi.string().allow(""),
+    isEmail: Joi.boolean(),
     event: Joi.required()
   };
   return Joi.validate(attendee, schema);
@@ -119,7 +119,6 @@ async function sendPasswordViaEmail(password, email, name) {
       password +
       ". Please Login for better experience.</p> <p>Warm Regards,</p><p>Team TieCon</p>"
   };
-  //console.log(name,email,password)
   transporter.sendMail(mailOptions);
 }
 
