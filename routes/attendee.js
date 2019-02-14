@@ -170,12 +170,8 @@ router.post("/new", upload.single("profileImageURL"), async (req, res) => {
     if (error) return res.status(404).send(error.details[0].message);
 
     if (req.file) {
-<<<<<<< Updated upstream
-      req.body.profileImageURL = AppConfig.serverURL + "/" + req.file.filename;
-=======
       //console.log(req.body)
       req.body.profileImageURL = AppConfig.serverURL + "/uploads/" + req.file.filename;
->>>>>>> Stashed changes
     }
 
     const attendee = new Attendee(
