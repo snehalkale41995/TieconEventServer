@@ -21,7 +21,7 @@ const fileFilter = (req, file, cb) => {
   }
 };
 const storage = multer.diskStorage({
-  destination: "./public/",
+  destination: "./public/uploads/",
   filename: function(req, file, cb) {
     let dt = new Date();
     cb(
@@ -40,14 +40,9 @@ const storage = multer.diskStorage({
 });
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 1024 * 1024 * 5 },
+  limits: { fileSize: 1024 * 1024 * 4 },
   fileFilter: fileFilter
 });
-
-// router.post("/upload", upload.single("myfile"), (req, res, next) => {
-//   console.log("File", req.file);
-//   console.log("Body", req.body);
-// });
 
 router.get("/", async (req, res) => {
   try {
@@ -122,13 +117,40 @@ router.post("/", async (req, res) => {
   }
 });
 
+// To send email only
 router.post("/inform", async (req, res) => {
-  //console.log(req.body)
   try {
     if (req.body.password && req.body.email) {
       let name = req.body.firstName + " " + req.body.lastName;
       await sendPasswordViaEmail(req.body.password, req.body.email, name);
-      res.status(200).send("Success");
+
+      const attendee = await Attendee.findByIdAndUpdate(
+        req.body._id,
+        _.pick(req.body, [
+          "firstName",
+          "lastName",
+          "email",
+          "contact",
+          "profileName",
+          "roleName",
+          "attendeeLabel",
+          "attendeeCount",
+          "briefInfo",
+          "profileImageURL",
+          "facebookProfileURL",
+          "linkedinProfileURL",
+          "isEmail",
+          "event"
+        ]),
+        { new: true }
+      );
+      if (!attendee)
+        return res
+          .status(404)
+          .send("The attendee Information with the given ID was not found.");
+
+      //res.send(attendee);
+      res.status(200).send(attendee);
     } else {
       res.status(404).send("Email not provided..");
     }
@@ -136,6 +158,8 @@ router.post("/inform", async (req, res) => {
     res.send(error.message);
   }
 });
+
+//post attendee data
 router.post("/new", upload.single("profileImageURL"), async (req, res) => {
   try {
     const userExists = await Attendee.findOne({ email: req.body.email });
@@ -147,7 +171,6 @@ router.post("/new", upload.single("profileImageURL"), async (req, res) => {
     if (error) return res.status(404).send(error.details[0].message);
 
     if (req.file) {
-      //console.log(req.body)
       req.body.profileImageURL = AppConfig.serverURL + "/" + req.file.filename;
     }
 
@@ -164,6 +187,7 @@ router.post("/new", upload.single("profileImageURL"), async (req, res) => {
         "attendeeCount",
         "briefInfo",
         "profileImageURL",
+        "isEmail",
         "event"
       ])
     );
