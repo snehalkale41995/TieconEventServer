@@ -124,6 +124,46 @@ router.post("/new",upload.single("profileImageURL"),async (req, res) => {
     res.send(error.message);
   }
 });
+router.post("/inform", async (req, res) => {
+  try {
+    if (req.body.password && req.body.email) {
+      let name = req.body.firstName + " " + req.body.lastName;
+      await sendPasswordViaEmail(req.body.password, req.body.email, name);
+      console.log('In inform',req.body)
+      const speaker = await Speaker.findByIdAndUpdate(
+        req.body._id,
+        _.pick(req.body, [
+          "firstName",
+          "lastName",
+          "email",
+          "contact",
+          "roleName",
+          "attendeeLabel",
+          "attendeeCount",
+          "briefInfo",
+          "info",
+          "profileImageURL",
+          "facebookProfileURL",
+          "linkedinProfileURL",
+          "isEmail",
+          "event"
+        ]),
+        { new: true }
+      );
+      if (!speaker)
+        return res
+          .status(404)
+          .send("The attendee Information with the given ID was not found.");
+
+      //res.send(attendee);
+      res.status(200).send(speaker);
+    } else {
+      res.status(404).send("Email not provided..");
+    }
+  } catch (error) {
+    res.send(error.message);
+  }
+});
 router.post("/", async (req, res) => {
   try {
     const userExists = await Attendee.findOne({ email: req.body.email });
@@ -158,7 +198,43 @@ router.post("/", async (req, res) => {
     res.send(error.message);
   }
 });
+router.put("/new/:id", upload.single("profileImageURL"),async (req, res) => {
+  try {
+    const { error } = validateSpeaker(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
+    if (req.file) {
+      req.body.profileImageURL = AppConfig.serverURL + "/uploads/" + req.file.filename;
+    }
+    const speaker = await Speaker.findByIdAndUpdate(
+      req.params.id,
+      _.pick(req.body, [
+        "firstName",
+        "lastName",
+        "email",
+        "contact",
+        "roleName",
+        "attendeeLabel",
+        "attendeeCount",
+        "briefInfo",
+        "info",
+        "profileImageURL",
+        "facebookProfileURL",
+        "linkedinProfileURL",
+        "event"
+      ]),
+      { new: true }
+    );
 
+    if (!speaker)
+      return res
+        .status(404)
+        .send("The speaker Information with the given ID was not found.");
+
+    res.send(speaker);
+  } catch (error) {
+    res.send(error.message);
+  }
+});
 router.put("/:id", async (req, res) => {
   try {
     const { error } = validateSpeaker(req.body);
