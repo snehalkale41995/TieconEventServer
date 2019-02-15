@@ -33,6 +33,9 @@ const Speaker = mongoose.model(
     briefInfo: String,
     info : String,
     profileImageURL: String,
+    facebookProfileURL: String,
+    linkedinProfileURL: String,
+    isEmail:false,
     event: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Events",
@@ -54,6 +57,9 @@ function validateSpeaker(speaker) {
     briefInfo: Joi.string().allow(""),
     info: Joi.string().allow(""),
     profileImageURL: Joi.string().allow(""),
+    facebookProfileURL:Joi.string().allow(""),
+    linkedinProfileURL:Joi.string().allow(""),
+    isEmail:Joi.boolean(),
     event: Joi.required()
   };
   return Joi.validate(speaker, schema);
@@ -85,12 +91,12 @@ async function sendPasswordViaEmail(password, email, name) {
   var transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "snehal.eternus@gmail.com",
+      user: "tiecon.eternus@gmail.com",
       pass: "espl@123"
     }
   });
   var mailOptions = {
-    from: "snehal.eternus@gmail.com",
+    from: "tiecon.eternus@gmail.com",
     to: email,
     subject: "Password for User " + name + " for Event management Application",
     html:
