@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const path = require("path");
 const multer = require("multer");
 const {
   Attendee,
@@ -123,7 +122,6 @@ router.post("/inform", async (req, res) => {
     if (req.body.password && req.body.email) {
       let name = req.body.firstName + " " + req.body.lastName;
       await sendPasswordViaEmail(req.body.password, req.body.email, name);
-
       const attendee = await Attendee.findByIdAndUpdate(
         req.body._id,
         _.pick(req.body, [
@@ -171,7 +169,7 @@ router.post("/new", upload.single("profileImageURL"), async (req, res) => {
     if (error) return res.status(404).send(error.details[0].message);
 
     if (req.file) {
-      req.body.profileImageURL = AppConfig.serverURL + "/" + req.file.filename;
+      req.body.profileImageURL = AppConfig.serverURL + "/uploads/" + req.file.filename;
     }
 
     const attendee = new Attendee(
@@ -204,7 +202,7 @@ router.put("/new/:id", upload.single("profileImageURL"), async (req, res) => {
     const { error } = validateAttendee(req.body);
     if (error) return res.status(404).send(error.details[0].message);
     if (req.file) {
-      req.body.profileImageURL = AppConfig.serverURL + "/" + req.file.filename;
+      req.body.profileImageURL = AppConfig.serverURL + "/uploads/" + req.file.filename;
     }
     const attendee = await Attendee.findByIdAndUpdate(
       req.params.id,
