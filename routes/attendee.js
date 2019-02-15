@@ -122,7 +122,6 @@ router.post("/inform", async (req, res) => {
     if (req.body.password && req.body.email) {
       let name = req.body.firstName + " " + req.body.lastName;
       await sendPasswordViaEmail(req.body.password, req.body.email, name);
-      console.log('In inform',req.body)
       const attendee = await Attendee.findByIdAndUpdate(
         req.body._id,
         _.pick(req.body, [
@@ -170,7 +169,6 @@ router.post("/new", upload.single("profileImageURL"), async (req, res) => {
     if (error) return res.status(404).send(error.details[0].message);
 
     if (req.file) {
-      //console.log(req.body)
       req.body.profileImageURL = AppConfig.serverURL + "/uploads/" + req.file.filename;
     }
 
