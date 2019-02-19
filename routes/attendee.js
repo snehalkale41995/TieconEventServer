@@ -137,6 +137,7 @@ router.post("/inform", async (req, res) => {
           "profileImageURL",
           "facebookProfileURL",
           "linkedinProfileURL",
+          "twitterProfileURL",
           "isEmail",
           "event"
         ]),
@@ -170,6 +171,8 @@ router.post("/new", upload.single("profileImageURL"), async (req, res) => {
 
     if (req.file) {
       req.body.profileImageURL = AppConfig.serverURL + "/uploads/" + req.file.filename;
+    }else{
+      req.body.profileImageURL=null;
     }
 
     const attendee = new Attendee(
@@ -185,6 +188,9 @@ router.post("/new", upload.single("profileImageURL"), async (req, res) => {
         "attendeeCount",
         "briefInfo",
         "profileImageURL",
+        "facebookProfileURL",
+        "linkedinProfileURL",
+        "twitterProfileURL",
         "isEmail",
         "event"
       ])
@@ -203,6 +209,8 @@ router.put("/new/:id", upload.single("profileImageURL"), async (req, res) => {
     if (error) return res.status(404).send(error.details[0].message);
     if (req.file) {
       req.body.profileImageURL = AppConfig.serverURL + "/uploads/" + req.file.filename;
+    }else{
+      req.body.profileImageURL=null;
     }
     const attendee = await Attendee.findByIdAndUpdate(
       req.params.id,
@@ -219,6 +227,7 @@ router.put("/new/:id", upload.single("profileImageURL"), async (req, res) => {
         "profileImageURL",
         "facebookProfileURL",
         "linkedinProfileURL",
+        "twitterProfileURL",
         "event"
       ]),
       { new: true }

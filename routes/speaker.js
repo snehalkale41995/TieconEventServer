@@ -95,6 +95,8 @@ router.post("/new",upload.single("profileImageURL"),async (req, res) => {
 
     if (req.file) {
       req.body.profileImageURL = AppConfig.serverURL + "/uploads/" + req.file.filename;
+    }else{
+      req.body.profileImageURL=null;
     }
     const speaker = new Speaker(
       _.pick(req.body, [
@@ -111,6 +113,7 @@ router.post("/new",upload.single("profileImageURL"),async (req, res) => {
         "profileImageURL",
         "facebookProfileURL",
         "linkedinProfileURL",
+        "twitterProfileURL",
         "isEmail",
         "event"
       ])
@@ -143,6 +146,7 @@ router.post("/inform", async (req, res) => {
           "profileImageURL",
           "facebookProfileURL",
           "linkedinProfileURL",
+          "twitterProfileURL",
           "isEmail",
           "event"
         ]),
@@ -202,6 +206,8 @@ router.put("/new/:id", upload.single("profileImageURL"),async (req, res) => {
     if (error) return res.status(400).send(error.details[0].message);
     if (req.file) {
       req.body.profileImageURL = AppConfig.serverURL + "/uploads/" + req.file.filename;
+    }else{
+      req.body.profileImageURL=null;
     }
     const speaker = await Speaker.findByIdAndUpdate(
       req.params.id,
@@ -218,6 +224,7 @@ router.put("/new/:id", upload.single("profileImageURL"),async (req, res) => {
         "profileImageURL",
         "facebookProfileURL",
         "linkedinProfileURL",
+        "twitterProfileURL",
         "event"
       ]),
       { new: true }
