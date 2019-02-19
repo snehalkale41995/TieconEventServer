@@ -35,6 +35,7 @@ const Speaker = mongoose.model(
     profileImageURL: String,
     facebookProfileURL: String,
     linkedinProfileURL: String,
+    twitterProfileURL:String,
     isEmail:false,
     event: {
       type: mongoose.Schema.Types.ObjectId,
@@ -59,6 +60,7 @@ function validateSpeaker(speaker) {
     profileImageURL: Joi.string().allow(""),
     facebookProfileURL:Joi.string().allow(""),
     linkedinProfileURL:Joi.string().allow(""),
+    twitterProfileURL:Joi.string().allow(""),
     isEmail:Joi.boolean(),
     event: Joi.required()
   };

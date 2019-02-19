@@ -13,7 +13,9 @@ const AboutUs = mongoose.model(
       type: String,
       required: true
     },
-    url: String
+    url: String,
+    facebookUrl: String,
+    twitterUrl: String
   })
 );
 
@@ -90,6 +92,8 @@ function validateAboutUs(about) {
   const schema = {
     info: Joi.string().required(),
     url: Joi.string().allow(""),
+    facebookUrl: Joi.string().allow(""),
+    twitterUrl: Joi.string().allow(""),
     event: Joi.required()
   };
   return Joi.validate(about, schema);

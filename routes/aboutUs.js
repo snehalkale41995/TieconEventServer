@@ -30,7 +30,7 @@ router.get("/eventId/:id", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  var aboutUsInfo = new AboutUs(_.pick(req.body, ["info", "url", "event"]));
+  var aboutUsInfo = new AboutUs(_.pick(req.body, ["info", "url", "event", "facebookUrl", "twitterUrl"]));
   try {
     const { error } = validateAboutUs(req.body);
     if (error) return res.status(400).send(error.details[0].message);
@@ -49,7 +49,7 @@ router.put("/:id", async (req, res) => {
 
     const aboutUsInfo = await AboutUs.findByIdAndUpdate(
       req.params.id,
-      _.pick(req.body, ["info", "url", "event"]),
+      _.pick(req.body, ["info", "url", "event","facebookUrl", "twitterUrl"]),
       { new: true }
     );
 
