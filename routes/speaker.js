@@ -206,9 +206,10 @@ router.put("/new/:id", upload.single("profileImageURL"),async (req, res) => {
     if (error) return res.status(400).send(error.details[0].message);
     if (req.file) {
       req.body.profileImageURL = AppConfig.serverURL + "/uploads/" + req.file.filename;
-    }else{
+    }else if(req.body.profileImageURL===""){
       req.body.profileImageURL=null;
     }
+
     const speaker = await Speaker.findByIdAndUpdate(
       req.params.id,
       _.pick(req.body, [
