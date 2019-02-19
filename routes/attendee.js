@@ -33,6 +33,7 @@ const storage = multer.diskStorage({
         dt.getFullYear() +
         "_" +
         req.body.firstName +
+        
         ".jpg"
     );
   }
@@ -204,14 +205,17 @@ router.post("/new", upload.single("profileImageURL"), async (req, res) => {
   }
 });
 router.put("/new/:id", upload.single("profileImageURL"), async (req, res) => {
+ 
+  
   try {
     const { error } = validateAttendee(req.body);
     if (error) return res.status(404).send(error.details[0].message);
     if (req.file) {
       req.body.profileImageURL = AppConfig.serverURL + "/uploads/" + req.file.filename;
-    }else{
+    }else if(req.body.profileImageURL===""){
       req.body.profileImageURL=null;
     }
+
     const attendee = await Attendee.findByIdAndUpdate(
       req.params.id,
       _.pick(req.body, [
