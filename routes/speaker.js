@@ -13,7 +13,6 @@ const { Attendee } = require("../models/attendee");
 const _ = require("lodash");
 const { AppConfig } = require("../constant/appConfig");
 
-
 const fileFilter = (req, file, cb) => {
   if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
     cb(null, true);
@@ -24,19 +23,7 @@ const fileFilter = (req, file, cb) => {
 const storage = multer.diskStorage({
   destination: "./public/uploads/",
   filename: function(req, file, cb) {
-    let dt = new Date();
-    cb(
-      null,
-      "IMAGE_" +
-        dt.getDate() +
-        "-" +
-        dt.getMonth() +
-        "-" +
-        dt.getFullYear() +
-        "_" +
-        req.body.firstName +
-        ".jpg"
-    );
+    cb(null, "IMAGE_" + req.body.email + ".jpg");
   }
 });
 const upload = multer({
@@ -44,7 +31,6 @@ const upload = multer({
   limits: { fileSize: 1024 * 1024 * 4 },
   fileFilter: fileFilter
 });
-
 
 router.get("/", async (req, res) => {
   try {
@@ -83,7 +69,8 @@ router.get("/event/:id", async (req, res) => {
     res.send(error.message);
   }
 });
-router.post("/new",upload.single("profileImageURL"),async (req, res) => {
+
+router.post("/new", upload.single("profileImageURL"), async (req, res) => {
   try {
     const userExists = await Attendee.findOne({ email: req.body.email });
     const speakerExists = await Speaker.findOne({ email: req.body.email });
@@ -94,9 +81,10 @@ router.post("/new",upload.single("profileImageURL"),async (req, res) => {
     if (error) return res.status(400).send(error.details[0].message);
 
     if (req.file) {
-      req.body.profileImageURL = AppConfig.serverURL + "/uploads/" + req.file.filename;
-    }else{
-      req.body.profileImageURL=null;
+      req.body.profileImageURL =
+        AppConfig.serverURL + "/uploads/" + req.file.filename;
+    } else {
+      req.body.profileImageURL = null;
     }
     const speaker = new Speaker(
       _.pick(req.body, [
@@ -126,6 +114,7 @@ router.post("/new",upload.single("profileImageURL"),async (req, res) => {
     res.send(error.message);
   }
 });
+
 router.post("/inform", async (req, res) => {
   try {
     if (req.body.password && req.body.email) {
@@ -166,6 +155,7 @@ router.post("/inform", async (req, res) => {
     res.send(error.message);
   }
 });
+
 router.post("/", async (req, res) => {
   try {
     const userExists = await Attendee.findOne({ email: req.body.email });
@@ -200,14 +190,16 @@ router.post("/", async (req, res) => {
     res.send(error.message);
   }
 });
-router.put("/new/:id", upload.single("profileImageURL"),async (req, res) => {
+
+router.put("/new/:id", upload.single("profileImageURL"), async (req, res) => {
   try {
     const { error } = validateSpeaker(req.body);
     if (error) return res.status(400).send(error.details[0].message);
     if (req.file) {
-      req.body.profileImageURL = AppConfig.serverURL + "/uploads/" + req.file.filename;
-    }else if(req.body.profileImageURL===""){
-      req.body.profileImageURL=null;
+      req.body.profileImageURL =
+        AppConfig.serverURL + "/uploads/" + req.file.filename;
+    } else if (req.body.profileImageURL === "") {
+      req.body.profileImageURL = null;
     }
 
     const speaker = await Speaker.findByIdAndUpdate(
@@ -230,17 +222,16 @@ router.put("/new/:id", upload.single("profileImageURL"),async (req, res) => {
       ]),
       { new: true }
     );
-
     if (!speaker)
       return res
         .status(404)
         .send("The speaker Information with the given ID was not found.");
-
     res.send(speaker);
   } catch (error) {
     res.send(error.message);
   }
 });
+
 router.put("/:id", async (req, res) => {
   try {
     const { error } = validateSpeaker(req.body);
@@ -263,7 +254,6 @@ router.put("/:id", async (req, res) => {
       ]),
       { new: true }
     );
-
     if (!speaker)
       return res
         .status(404)
