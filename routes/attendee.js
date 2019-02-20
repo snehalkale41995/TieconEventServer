@@ -22,20 +22,7 @@ const fileFilter = (req, file, cb) => {
 const storage = multer.diskStorage({
   destination: "./public/uploads/",
   filename: function(req, file, cb) {
-    let dt = new Date();
-    cb(
-      null,
-      "IMAGE_" +
-        dt.getDate() +
-        "-" +
-        dt.getMonth() +
-        "-" +
-        dt.getFullYear() +
-        "_" +
-        req.body.firstName +
-        
-        ".jpg"
-    );
+    cb(null, "IMAGE_" + req.body.email + ".jpg");
   }
 });
 const upload = multer({
@@ -171,9 +158,10 @@ router.post("/new", upload.single("profileImageURL"), async (req, res) => {
     if (error) return res.status(404).send(error.details[0].message);
 
     if (req.file) {
-      req.body.profileImageURL = AppConfig.serverURL + "/uploads/" + req.file.filename;
-    }else{
-      req.body.profileImageURL=null;
+      req.body.profileImageURL =
+        AppConfig.serverURL + "/uploads/" + req.file.filename;
+    } else {
+      req.body.profileImageURL = null;
     }
 
     const attendee = new Attendee(
@@ -205,15 +193,14 @@ router.post("/new", upload.single("profileImageURL"), async (req, res) => {
   }
 });
 router.put("/new/:id", upload.single("profileImageURL"), async (req, res) => {
- 
-  
   try {
     const { error } = validateAttendee(req.body);
     if (error) return res.status(404).send(error.details[0].message);
     if (req.file) {
-      req.body.profileImageURL = AppConfig.serverURL + "/uploads/" + req.file.filename;
-    }else if(req.body.profileImageURL===""){
-      req.body.profileImageURL=null;
+      req.body.profileImageURL =
+        AppConfig.serverURL + "/uploads/" + req.file.filename;
+    } else if (req.body.profileImageURL === "") {
+      req.body.profileImageURL = null;
     }
 
     const attendee = await Attendee.findByIdAndUpdate(
