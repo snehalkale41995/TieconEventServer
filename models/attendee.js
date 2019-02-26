@@ -4,7 +4,8 @@ const nodemailer = require("nodemailer");
 // const bcrypt = require("bcrypt");
 const generator = require("generate-password");
 const emailExistence = require("email-existence");
-
+const playStoreLink =
+  "https://play.google.com/store/apps/details?id=com.eternus.tieconpuneevents";
 const Attendee = mongoose.model(
   "Attendee",
   new mongoose.Schema({
@@ -100,7 +101,7 @@ async function validateEmail(email) {
   });
 }
 
-async function sendPasswordViaEmail(password, email, name) {
+async function sendPasswordViaEmail(password, email, name, eventInfo) {
   var transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -108,19 +109,35 @@ async function sendPasswordViaEmail(password, email, name) {
       pass: "espl@123"
     }
   });
+
   var mailOptions = {
     from: "tiecon.eternus@gmail.com",
     to: email,
-    subject: "Password for User " + name + " for Event management Application",
+    subject:
+      eventInfo.eventName +" "+Announcement: Online Networking is now OPEN!",
     html:
-      "<p>Hello " +
-      name +
-      ",</p><p>Greetings from Event management. </p> <p>Your Password for account registered through " +
-      email +
-      " is as " +
-      password +
-      ". Please Login for better experience.</p> <p>Warm Regards,</p><p>Team TieCon</p>"
+      "<p>Dear " +
+      "<b>"+name+"</b>"+
+      ",</p><span style='color:#000;'>Thank you for registering for"+" "+
+      eventInfo.eventName+
+      ", at " +
+      eventInfo.venue+".</span><br/>"+
+      "<span style='color:#000;'>As a registered participant, you now have access to TIEPUNE Networking Platform that connects all participants before, during and after the event.</span>" +
+      "<br/><span style='color:#000;'>Please update your profile with your details and contact.</span> " +
+      "<p><b>Login Details</b><br/>" +
+      "<span style='color:#000;'>Email :" + " "+
+       email + "</span><br/>"+
+      "<span style='color:#000;'>Password :" + " "+
+      password + "</span>" +
+      "</p>" +
+      "<p><b>Download Mobile App</b>" +
+      "<br/><span><a href=" +
+      playStoreLink +
+      "> <img style='width:120px;height:50px;' src='" +
+      "../assets/google-play.png" +
+      "'/> </a> <span>"
   };
+
   transporter.sendMail(mailOptions);
 }
 

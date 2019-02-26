@@ -97,6 +97,7 @@ router.post("/", async (req, res) => {
     );
     let name = req.body.firstName + " " + req.body.lastName;
     const result = await attendee.save();
+
     await sendPasswordViaEmail(req.body.password, req.body.email, name);
     res.send(result);
   } catch (error) {
@@ -186,7 +187,15 @@ router.post("/new", upload.single("profileImageURL"), async (req, res) => {
     );
     let name = req.body.firstName + " " + req.body.lastName;
     const result = await attendee.save();
-    await sendPasswordViaEmail(req.body.password, req.body.email, name);
+    const attendeeDetails = await Attendee.findById(result._id).populate(
+      "event"
+    );
+    await sendPasswordViaEmail(
+      req.body.password,
+      req.body.email,
+      name,
+      attendeeDetails.event
+    );
     res.send(result);
   } catch (error) {
     res.send(error.message);
