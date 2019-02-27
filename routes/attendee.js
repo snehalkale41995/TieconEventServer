@@ -110,7 +110,15 @@ router.post("/inform", async (req, res) => {
   try {
     if (req.body.password && req.body.email) {
       let name = req.body.firstName + " " + req.body.lastName;
-      await sendPasswordViaEmail(req.body.password, req.body.email, name);
+      const attendeeDetails = await Attendee.findById(req.body._id).populate(
+        "event"
+      );
+      await sendPasswordViaEmail(
+        req.body.password,
+        req.body.email,
+        name,
+        attendeeDetails.event
+      );
       const attendee = await Attendee.findByIdAndUpdate(
         req.body._id,
         _.pick(req.body, [
@@ -137,8 +145,8 @@ router.post("/inform", async (req, res) => {
           .status(404)
           .send("The attendee Information with the given ID was not found.");
 
-      //res.send(attendee);
-      res.status(200).send(attendee);
+      res.send(attendee);
+      res.status(200).send(attendeeDetails);
     } else {
       res.status(404).send("Email not provided..");
     }
@@ -196,7 +204,7 @@ router.post("/new", upload.single("profileImageURL"), async (req, res) => {
       name,
       attendeeDetails.event
     );
-    res.send(result);
+    res.send(attendeeDetails);
   } catch (error) {
     res.send(error.message);
   }
