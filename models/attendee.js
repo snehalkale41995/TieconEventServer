@@ -1,10 +1,14 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
 const nodemailer = require("nodemailer");
+const moment = require("moment");
 // const bcrypt = require("bcrypt");
 const generator = require("generate-password");
 const emailExistence = require("email-existence");
-
+const playStoreLink =
+  "https://play.google.com/store/apps/details?id=com.eternus.tieconpuneevents";
+const appStoreLink =
+  "https://itunes.apple.com/es/app/tie-pune-events/id1367365998?mt=8";
 const Attendee = mongoose.model(
   "Attendee",
   new mongoose.Schema({
@@ -100,7 +104,24 @@ async function validateEmail(email) {
   });
 }
 
-async function sendPasswordViaEmail(password, email, name) {
+async function sendPasswordViaEmail(password, email, name, eventInfo) {
+  let info = "Announcement : Online Networking is now OPEN!";
+  let emailSubject = eventInfo.eventName + "  " + info;
+  let dateText = "";
+  let eventStartDate = new Date(eventInfo.startDate).setHours(0, 0, 0, 0);
+  let eventEndDate = new Date(eventInfo.endDate).setHours(0, 0, 0, 0);
+
+  if (eventStartDate != eventEndDate) {
+    dateText =
+      moment(eventStartDate).format("LL") +
+      " " +
+      "to" +
+      " " +
+      moment(eventEndDate).format("LL");
+  } else {
+    dateText = dateText = moment(eventStartDate).format("LL");
+  }
+
   var transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -108,18 +129,46 @@ async function sendPasswordViaEmail(password, email, name) {
       pass: "espl@123"
     }
   });
+
   var mailOptions = {
     from: "tiecon.eternus@gmail.com",
     to: email,
-    subject: "Password for User " + name + " for Event management Application",
+    subject: emailSubject,
     html:
-      "<p>Hello " +
+      "<p>Dear " +
+      "<b>" +
       name +
-      ",</p><p>Greetings from Event management. </p> <p>Your Password for account registered through " +
+      "</b>" +
+      ",</p><span style='color:#000;'>Thank you for registering for" +
+      " " +
+      eventInfo.eventName +
+      ", on " +
+      dateText +
+      ", at " +
+      eventInfo.venue +
+      ".</span><br/>" +
+      "<span style='color:#000;'>As a registered participant, you now have access to TiE Pune Events Networking Platform that connects all participants before, during and after the event.</span>" +
+      "<br/><span style='color:#000;'>Please update your profile with your details and contact.</span> " +
+      "<p><b>Login Details</b><br/>" +
+      "<span style='color:#000;'>Email :" +
+      " " +
       email +
-      " is as " +
+      "</span><br/>" +
+      "<span style='color:#000;'>Password :" +
+      " " +
       password +
-      ". Please Login for better experience.</p> <p>Warm Regards,</p><p>Team TieCon</p>"
+      "</span>" +
+      "</p>" +
+      "<p><b><span style='color:#000;'>Download Mobile App</b></span><br/>" +
+      "<span style='color:#000;'><a href=" +
+      appStoreLink +
+      "> Available On The App Store </a>" +
+      "</span><br/>" +
+      "<span style='color:#000;'><a href=" +
+      playStoreLink +
+      ">Get It On Google Play Store </a>" +
+      "</span><br/><br/>" +
+      "<p style='color:#000;'>Warm Regards,<br/>Team TieCon</p>"
   };
   transporter.sendMail(mailOptions);
 }

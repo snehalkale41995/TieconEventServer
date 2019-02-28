@@ -31,12 +31,12 @@ const Speaker = mongoose.model(
     attendeeLabel: String,
     attendeeCount: Number,
     briefInfo: String,
-    info : String,
+    info: String,
     profileImageURL: String,
     facebookProfileURL: String,
     linkedinProfileURL: String,
-    twitterProfileURL:String,
-    isEmail:false,
+    twitterProfileURL: String,
+    isEmail: false,
     event: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Events",
@@ -58,10 +58,10 @@ function validateSpeaker(speaker) {
     briefInfo: Joi.string().allow(""),
     info: Joi.string().allow(""),
     profileImageURL: Joi.string().allow(""),
-    facebookProfileURL:Joi.string().allow(""),
-    linkedinProfileURL:Joi.string().allow(""),
-    twitterProfileURL:Joi.string().allow(""),
-    isEmail:Joi.boolean(),
+    facebookProfileURL: Joi.string().allow(""),
+    linkedinProfileURL: Joi.string().allow(""),
+    twitterProfileURL: Joi.string().allow(""),
+    isEmail: Joi.boolean(),
     event: Joi.required()
   };
   return Joi.validate(speaker, schema);
@@ -89,32 +89,32 @@ function validateAuthUser(user) {
 //   return { password: password, hashedPassword: hashedPassword };
 // }
 
-async function sendPasswordViaEmail(password, email, name) {
-  var transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: "tiecon.eternus@gmail.com",
-      pass: "espl@123"
-    }
-  });
-  var mailOptions = {
-    from: "tiecon.eternus@gmail.com",
-    to: email,
-    subject: "Password for User " + name + " for Event management Application",
-    html:
-      "<p>Hello " +
-      name +
-      ",</p><p>Greetings from Event management. </p> <p>Your Password for account registered through " +
-      email +
-      " is as " +
-      password +
-      " .Please Login for better experience .</p>"
-  };
-  transporter.sendMail(mailOptions);
-}
+// async function sendPasswordViaEmail(password, email, name) {
+//   var transporter = nodemailer.createTransport({
+//     service: "gmail",
+//     auth: {
+//       user: "tiecon.eternus@gmail.com",
+//       pass: "espl@123"
+//     }
+//   });
+//   var mailOptions = {
+//     from: "tiecon.eternus@gmail.com",
+//     to: email,
+//     subject: "Password for User " + name + " for Event management Application",
+//     html:
+//       "<p>Hello " +
+//       name +
+//       ",</p><p>Greetings from Event management. </p> <p>Your Password for account registered through " +
+//       email +
+//       " is as " +
+//       password +
+//       " .Please Login for better experience .</p>"
+//   };
+//   transporter.sendMail(mailOptions);
+// }
 
 exports.Speaker = Speaker;
 exports.validateSpeaker = validateSpeaker;
 exports.validateAuthUser = validateAuthUser;
 // exports.generatePassword = generatePassword;
-exports.sendPasswordViaEmail = sendPasswordViaEmail;
+//exports.sendPasswordViaEmail = sendPasswordViaEmail;

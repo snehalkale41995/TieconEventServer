@@ -5,9 +5,11 @@ const multer = require("multer");
 const {
   Speaker,
   validateSpeaker,
-  generatePassword,
-  sendPasswordViaEmail
+  generatePassword
 } = require("../models/speaker");
+
+const { sendPasswordViaEmail } = require("../models/attendee");
+
 const { Attendee } = require("../models/attendee");
 
 const _ = require("lodash");
@@ -108,8 +110,15 @@ router.post("/new", upload.single("profileImageURL"), async (req, res) => {
     );
     let name = req.body.firstName + " " + req.body.lastName;
     const result = await speaker.save();
-    await sendPasswordViaEmail(req.body.password, req.body.email, name);
-    res.send(result);
+
+    const speakerDetails = await Speaker.findById(result._id).populate("event");
+    await sendPasswordViaEmail(
+      req.body.password,
+      req.body.email,
+      name,
+      speakerDetails.event
+    );
+    res.send(speakerDetails);
   } catch (error) {
     res.send(error.message);
   }
@@ -119,7 +128,15 @@ router.post("/inform", async (req, res) => {
   try {
     if (req.body.password && req.body.email) {
       let name = req.body.firstName + " " + req.body.lastName;
-      await sendPasswordViaEmail(req.body.password, req.body.email, name);
+      const speakerDetails = await Speaker.findById(req.body._id).populate(
+        "event"
+      );
+      await sendPasswordViaEmail(
+        req.body.password,
+        req.body.email,
+        name,
+        speakerDetails.event
+      );
       const speaker = await Speaker.findByIdAndUpdate(
         req.body._id,
         _.pick(req.body, [
