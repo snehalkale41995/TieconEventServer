@@ -8,25 +8,26 @@ const {
 } = require("../models/attendee");
 const { Speaker } = require("../models/speaker");
 const { AttendeeCounts} = require("../models/attendeeCount");
-
 const _ = require("lodash");
 const { AppConfig } = require("../constant/appConfig");
 
-router.post("/", async (req, res) => {
+router.post("/:eventId", async (req, res) => {
   var attendeeList = [], attendeeLength,
       attendeeObj,
       countDetails,
       password,
       attendeeCount=0,
-      totalCount=0;
+      totalCount=0,
+      eventId = req.params.eventId
   try {
     attendeeList = req.body;
     attendeeLength = attendeeList.length;
-    countDetails = await getAttendeeCount(attendeeList[0].event);
-    attendeeCount = countDetails.attendeeCount;
+    countDetails = await getAttendeeCount(eventId);
+    attendeeCount = countDetails.attendeeCount + 1;
    
     for (var i = 0; i < attendeeList.length; i++) {
        attendeeObj = {...attendeeList[i]};
+       attendeeObj.event = eventId;
        attendeeObj.password = "ES" + Math.floor(1000 + Math.random() * 9000);
        attendeeObj.profileImageURL = "";
        attendeeObj.facebookProfileURL = "";
@@ -68,9 +69,12 @@ router.post("/", async (req, res) => {
       );
       attendeeCount++;
     }
-     await updateAttendeeCount(attendeeList[0].event, attendeeLength, countDetails);
+     await updateAttendeeCount(eventId, attendeeLength, countDetails);
+    //  res.json({ success : true });
+    res.status(200).json({success : true});
   } catch (error) {
-    res.send(error.message);
+   // res.send(error.message);
+    res.status(500).json({success: false});
   }
 });
 
