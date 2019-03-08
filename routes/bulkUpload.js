@@ -7,21 +7,27 @@ const {
   sendPasswordViaEmail
 } = require("../models/attendee");
 const { Speaker } = require("../models/speaker");
+const { AttendeeCounts} = require("../models/attendeeCount");
 
 const _ = require("lodash");
 const { AppConfig } = require("../constant/appConfig");
 
 router.post("/", async (req, res) => {
-  var attendeeList = [],
+  var attendeeList = [], attendeeLength,
       attendeeObj,
+      countDetails,
       password,
-      attendeeCount= 200;
+      attendeeCount=0,
+      totalCount=0;
   try {
-    let attendeeList = req.body;
+    attendeeList = req.body;
+    attendeeLength = attendeeList.length;
+    countDetails = await getAttendeeCount(attendeeList[0].event);
+    attendeeCount = countDetails.attendeeCount;
+   
     for (var i = 0; i < attendeeList.length; i++) {
-       password = "ES" + Math.floor(1000 + Math.random() * 9000);
        attendeeObj = {...attendeeList[i]};
-       attendeeObj.password = password;
+       attendeeObj.password = "ES" + Math.floor(1000 + Math.random() * 9000);
        attendeeObj.profileImageURL = "";
        attendeeObj.facebookProfileURL = "";
        attendeeObj.linkedinProfileURL = "";
@@ -60,12 +66,43 @@ router.post("/", async (req, res) => {
         name,
         attendeeDetails.event
       );
-      // res.send(attendeeDetails);
       attendeeCount++;
     }
+     await updateAttendeeCount(attendeeList[0].event, attendeeLength, countDetails);
   } catch (error) {
     res.send(error.message);
   }
 });
+
+ async function getAttendeeCount (eventId){
+   try {
+    const count = await AttendeeCounts.find()
+      .where("event")
+      .equals(eventId);
+      return count[0];
+  } catch (error) {
+    res.send(error.message);
+  }
+}
+
+ async function updateAttendeeCount (eventId, attendeeLength, countDetails ){
+   var attendeeCount, totalCount, attendeeObj = {};
+    try {
+    attendeeObj = {
+    attendeeCount : countDetails.attendeeCount + attendeeLength,
+    totalCount : countDetails.totalCount + attendeeLength
+  }
+    const count = await AttendeeCounts.findByIdAndUpdate(
+      countDetails._id,
+      _.pick(attendeeObj, [
+        "attendeeCount",
+        "totalCount"
+      ]),
+      { new: true }
+    );
+  } catch (error) {
+  // console.log("errrr",error)
+  }
+}
 
 module.exports = router;
