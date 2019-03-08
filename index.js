@@ -24,8 +24,8 @@ const registrationResponse = require("./routes/registrationResponse");
 const sessionFeedback = require("./routes/sessionFeedback");
 const sessionQAnswer = require("./routes/sessionQAnswer");
 const appTheme = require("./routes/appTheme");
-const bulkUpload = require("./routes/bulkUpload");
-
+const bulkUploadAttendee = require("./routes/bulkUploadAttendee");
+const bulkUploadSpeaker = require("./routes/bulkUploadSpeaker");
 const cors = require("cors");
 
 var public = path.join(__dirname, "public");
@@ -64,7 +64,9 @@ app.use("/api/homeQueResponse", homeQueResponse);
 app.use("/api/sessionFeedback", sessionFeedback);
 app.use("/api/sessionQAnswer", sessionQAnswer);
 app.use("/api/appTheme", appTheme);
-app.use("/api/bulkUpload", bulkUpload);
+app.use("/api/bulkUploadAttendee", bulkUploadAttendee);
+app.use("/api/bulkUploadSpeaker", bulkUploadSpeaker);
+
 
 const port = process.env.PORT || 3010;
 
