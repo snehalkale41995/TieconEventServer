@@ -34,6 +34,7 @@ router.post("/:eventId", async (req, res) => {
        attendeeObj.linkedinProfileURL = "";
        attendeeObj.twitterProfileURL = "";
        attendeeObj.isEmail = "true";
+       attendeeObj.roleName = attendeeObj.profileName ;
        attendeeObj.attendeeLabel = attendeeObj.profileName.substring(0, 3).toUpperCase();
        attendeeObj.attendeeCount = attendeeCount;
       const attendee = new Attendee(
