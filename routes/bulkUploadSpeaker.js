@@ -2,8 +2,6 @@ const express = require("express");
 const router = express.Router();
 const {
   Attendee,
-  validateAttendee,
-  generatePassword,
   sendPasswordViaEmail
 } = require("../models/attendee");
 const { Speaker } = require("../models/speaker");
@@ -12,64 +10,65 @@ const _ = require("lodash");
 const { AppConfig } = require("../constant/appConfig");
 
 router.post("/:eventId", async (req, res) => {
-  var attendeeList = [], attendeeLength,
-      attendeeObj,
+  var speakerList = [], speakerLength,
+      speakerObj,
       countDetails,
       password,
-      attendeeCount=0,
+      speakerCount=0,
       totalCount=0,
       eventId = req.params.eventId
   try {
-    attendeeList = req.body;
-    attendeeLength = attendeeList.length;
+    speakerList = req.body;
+    speakerLength = speakerList.length;
     countDetails = await getAttendeeCount(eventId);
-    attendeeCount = countDetails.attendeeCount + 1;
+    speakerCount = countDetails.speakerCount + 1;
    
-    for (var i = 0; i < attendeeList.length; i++) {
-       attendeeObj = {...attendeeList[i]};
-       attendeeObj.event = eventId;
-       attendeeObj.password = "ES" + Math.floor(1000 + Math.random() * 9000);
-       attendeeObj.profileImageURL = "";
-       attendeeObj.facebookProfileURL = "";
-       attendeeObj.linkedinProfileURL = "";
-       attendeeObj.twitterProfileURL = "";
-       attendeeObj.isEmail = "true";
-       attendeeObj.attendeeLabel = attendeeObj.profileName.substring(0, 3).toUpperCase();
-       attendeeObj.attendeeCount = attendeeCount;
-      const attendee = new Attendee(
-        _.pick(attendeeObj, [
+    for (var i = 0; i < speakerList.length; i++) {
+       speakerObj = {...speakerList[i]};
+       speakerObj.event = eventId;
+       speakerObj.password = "ES" + Math.floor(1000 + Math.random() * 9000);
+       speakerObj.profileImageURL = "";
+       speakerObj.facebookProfileURL = "";
+       speakerObj.linkedinProfileURL = "";
+       speakerObj.twitterProfileURL = "";
+       speakerObj.isEmail = "true";
+       speakerObj.roleName = "Speaker";
+       speakerObj.attendeeLabel = "SPE";
+       speakerObj.attendeeCount = speakerCount;
+      const speaker = new Speaker(
+        _.pick(speakerObj, [
           "firstName",
           "lastName",
           "email",
-          "event",
-          "contact",
-          "profileName",
-          "roleName",
-          "briefInfo",
           "password",
+          "contact",
+          "roleName",
           "attendeeLabel",
           "attendeeCount",
+          "briefInfo",
+          "info",
           "profileImageURL",
           "facebookProfileURL",
           "linkedinProfileURL",
           "twitterProfileURL",
           "isEmail",
+          "event"
         ])
       );
-      let name = attendeeObj.firstName + " " + attendeeObj.lastName;
-      const result = await attendee.save();
-      const attendeeDetails = await Attendee.findById(result._id).populate(
+      let name = speakerObj.firstName + " " + speakerObj.lastName;
+      const result = await speaker.save();
+      const speakerDetails = await Speaker.findById(result._id).populate(
         "event"
       );
       await sendPasswordViaEmail(
-        attendeeObj.password,
-        attendeeObj.email,
+        speakerObj.password,
+        speakerObj.email,
         name,
-        attendeeDetails.event
+        speakerDetails.event
       );
-      attendeeCount++;
+      speakerCount++;
     }
-     await updateAttendeeCount(eventId, attendeeLength, countDetails);
+     await updateAttendeeCount(eventId, speakerLength, countDetails);
     //  res.json({ success : true });
     res.status(200).json({success : true});
   } catch (error) {
@@ -89,17 +88,17 @@ router.post("/:eventId", async (req, res) => {
   }
 }
 
- async function updateAttendeeCount (eventId, attendeeLength, countDetails ){
-   var attendeeCount, totalCount, attendeeObj = {};
+ async function updateAttendeeCount (eventId, speakerLength, countDetails ){
+   var speakerCount, totalCount, speakerObj = {};
     try {
-    attendeeObj = {
-    attendeeCount : countDetails.attendeeCount + attendeeLength,
-    totalCount : countDetails.totalCount + attendeeLength
+    speakerObj = {
+    speakerCount : countDetails.speakerCount + speakerLength,
+    totalCount : countDetails.totalCount + speakerLength
   }
     const count = await AttendeeCounts.findByIdAndUpdate(
       countDetails._id,
-      _.pick(attendeeObj, [
-        "attendeeCount",
+      _.pick(speakerObj, [
+        "speakerCount",
         "totalCount"
       ]),
       { new: true }
