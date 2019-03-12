@@ -10,6 +10,7 @@ const { Speaker } = require("../models/speaker");
 const { AttendeeCounts } = require("../models/attendeeCount");
 const _ = require("lodash");
 const { AppConfig } = require("../constant/appConfig");
+const { ProfileList } = require("../models/profileList");
 
 router.post("/post/:eventId", async (req, res) => {
   var attendeeList = [],
@@ -120,13 +121,21 @@ router.post("/validate", async (req, res) => {
     let errorFlag = false;
     for (var i = 0; i < attendeeList.length; i++) {
       attendee = { ...attendeeList[i] };
-      let errorMessage = "";
+      let errorMessage = "", profileExits, profileList, profiles, profileName;
       let userExists = await Attendee.findOne({ email: attendee.email });
       let speakerExists = await Speaker.findOne({ email: attendee.email });
+      profileName = attendee.profileName;
+      profileList = await ProfileList.find();
+      profiles = profileList[0].profiles;
+      
       if (userExists || speakerExists) {
-        errorMessage += "emailId already exists" + " ";
+        errorMessage += "emailId already exists" ;
         errorFlag = true;
       }
+       if(profiles.indexOf(profileName) === -1){
+        errorMessage += ", Invalid profile";
+        errorFlag = true;
+       }
       if (attendee.contact.toString().length != 10) {
         errorMessage += ", Invalid contact" + " ";
         errorFlag = true;
