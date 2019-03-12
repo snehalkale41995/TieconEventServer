@@ -79,7 +79,7 @@ router.post("/post/:eventId", async (req, res) => {
     res.status(200).json({ success: true });
   } catch (error) {
     // res.send(error.message);
-    res.status(500).json({ success: false });
+    res.status(404).json({ success: false });
   }
 });
 
@@ -145,10 +145,10 @@ router.post("/validate", async (req, res) => {
 
       userList.push(attendee);
     }
-    if (errorFlag) res.status(500).json({ success: false, userList: userList });
+    if (errorFlag) res.status(200).json({ success: false, userList: userList });
     else res.status(200).json({ success: true, userList: userList });
   } catch (error) {
-      res.status(500).json({success : false, userList: userList });
+      res.status(200).json({success : false, userList: userList });
   }
 });
 
