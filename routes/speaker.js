@@ -104,7 +104,6 @@ router.post("/new", upload.single("profileImageURL"), async (req, res) => {
         "facebookProfileURL",
         "linkedinProfileURL",
         "twitterProfileURL",
-        "isEmail",
         "event"
       ])
     );
@@ -153,7 +152,6 @@ router.post("/inform", async (req, res) => {
           "facebookProfileURL",
           "linkedinProfileURL",
           "twitterProfileURL",
-          "isEmail",
           "event"
         ]),
         { new: true }

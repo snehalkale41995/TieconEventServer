@@ -35,7 +35,6 @@ router.post("/post/:eventId", async (req, res) => {
       attendeeObj.facebookProfileURL = "";
       attendeeObj.linkedinProfileURL = "";
       attendeeObj.twitterProfileURL = "";
-      attendeeObj.isEmail = "true";
       attendeeObj.roleName = attendeeObj.profileName;
       attendeeObj.attendeeLabel = attendeeObj.profileName
         .substring(0, 3)
@@ -57,8 +56,7 @@ router.post("/post/:eventId", async (req, res) => {
           "profileImageURL",
           "facebookProfileURL",
           "linkedinProfileURL",
-          "twitterProfileURL",
-          "isEmail"
+          "twitterProfileURL"
         ])
       );
       let name = attendeeObj.firstName + " " + attendeeObj.lastName;

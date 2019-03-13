@@ -31,7 +31,6 @@ router.post("/:eventId", async (req, res) => {
        speakerObj.facebookProfileURL = "";
        speakerObj.linkedinProfileURL = "";
        speakerObj.twitterProfileURL = "";
-       speakerObj.isEmail = "true";
        speakerObj.roleName = "Speaker";
        speakerObj.attendeeLabel = "SPE";
        speakerObj.attendeeCount = speakerCount;
@@ -51,7 +50,6 @@ router.post("/:eventId", async (req, res) => {
           "facebookProfileURL",
           "linkedinProfileURL",
           "twitterProfileURL",
-          "isEmail",
           "event"
         ])
       );
