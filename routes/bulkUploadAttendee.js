@@ -129,15 +129,15 @@ router.post("/validate", async (req, res) => {
       profiles = profileList[0].profiles;
       
       if (userExists || speakerExists) {
-        errorMessage += "emailId already exists" ;
+        errorMessage += "| Email Id already exists"+" " ;
         errorFlag = true;
       }
        if(profiles.indexOf(profileName) === -1){
-        errorMessage += ", Invalid profile";
+        errorMessage += "| Invalid profile"+" ";
         errorFlag = true;
        }
       if (attendee.contact.toString().length != 10) {
-        errorMessage += ", Invalid contact" + " ";
+        errorMessage += "| Invalid contact"+" ";
         errorFlag = true;
       }
       if (errorFlag === true) attendee.errorMessage = errorMessage;
