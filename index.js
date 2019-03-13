@@ -24,7 +24,8 @@ const registrationResponse = require("./routes/registrationResponse");
 const sessionFeedback = require("./routes/sessionFeedback");
 const sessionQAnswer = require("./routes/sessionQAnswer");
 const appTheme = require("./routes/appTheme");
-
+const bulkUploadAttendee = require("./routes/bulkUploadAttendee");
+const bulkUploadSpeaker = require("./routes/bulkUploadSpeaker");
 const cors = require("cors");
 
 var public = path.join(__dirname, "public");
@@ -63,6 +64,10 @@ app.use("/api/homeQueResponse", homeQueResponse);
 app.use("/api/sessionFeedback", sessionFeedback);
 app.use("/api/sessionQAnswer", sessionQAnswer);
 app.use("/api/appTheme", appTheme);
+app.use("/api/bulkUploadAttendee", bulkUploadAttendee);
+app.use("/api/bulkUploadSpeaker", bulkUploadSpeaker);
+
+
 const port = process.env.PORT || 3010;
 
 app.listen(port, () => console.log(`Listening on port ${port}...`));
