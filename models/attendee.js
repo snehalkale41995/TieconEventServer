@@ -42,6 +42,7 @@ const Attendee = mongoose.model(
     facebookProfileURL: String,
     linkedinProfileURL: String,
     twitterProfileURL: String,
+    dateCreated : Date,
     event: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Events",
@@ -64,6 +65,7 @@ function validateAttendee(attendee) {
     attendeeLabel: Joi.string(),
     attendeeCount: Joi.number(),
     briefInfo: Joi.string().allow(""),
+    dateCreated: Joi.date(),
     profileImageURL: Joi.string().allow(""),
     facebookProfileURL: Joi.string().allow(""),
     linkedinProfileURL: Joi.string().allow(""),

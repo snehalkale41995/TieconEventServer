@@ -104,7 +104,8 @@ router.post("/new", upload.single("profileImageURL"), async (req, res) => {
         "facebookProfileURL",
         "linkedinProfileURL",
         "twitterProfileURL",
-        "event"
+        "event",
+        "dateCreated"
       ])
     );
     let name = req.body.firstName + " " + req.body.lastName;
@@ -194,7 +195,8 @@ router.post("/", async (req, res) => {
         "briefInfo",
         "info",
         "profileImageURL",
-        "event"
+        "event",
+        "dateCreated"
       ])
     );
     let name = req.body.firstName + " " + req.body.lastName;
