@@ -115,12 +115,13 @@ router.post("/validate", async (req, res) => {
     let attendeeList = req.body,
       userList = [];
     attendeeLength = attendeeList.length;
-    let errorFlag = false;
+    let errorFlag = false, validEmail;
     for (var i = 0; i < attendeeList.length; i++) {
       attendee = { ...attendeeList[i] };
       let errorMessage = "", profileExits, profileList, profiles, profileName;
       let userExists = await Attendee.findOne({ email: attendee.email });
       let speakerExists = await Speaker.findOne({ email: attendee.email });
+      validEmail = attendee.email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
       profileName = attendee.profileName;
       profileList = await ProfileList.find();
       profiles = profileList[0].profiles;
@@ -129,14 +130,22 @@ router.post("/validate", async (req, res) => {
         errorMessage += "| Email Id already exists"+" " ;
         errorFlag = true;
       }
+
+       if(!validEmail){
+        errorMessage += "| Invalid email"+" " ;
+        errorFlag = true;
+       }
+
        if(profiles.indexOf(profileName) === -1){
         errorMessage += "| Invalid profile"+" ";
         errorFlag = true;
        }
+
       if (attendee.contact.toString().length != 10) {
         errorMessage += "| Invalid contact"+" ";
         errorFlag = true;
       }
+
       if (errorFlag === true) attendee.errorMessage = errorMessage;
       else attendee.errorMessage = "";
 

@@ -109,17 +109,23 @@ router.post("/validate", async (req, res) => {
   try {
     let speakerList = req.body;
     let userList = [];
-    let errorFlag = false;
+    let errorFlag = false, validEmail;
     for (var i = 0; i < speakerList.length; i++) {
       speaker = { ...speakerList[i] };
       let errorMessage = "";
       let userExists = await Attendee.findOne({ email: speaker.email });
       let speakerExists = await Speaker.findOne({ email: speaker.email });
-      
+      validEmail = speaker.email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
       if (userExists || speakerExists) {
         errorMessage += "| Email Id already exists"+" " ;
         errorFlag = true;
       }
+      
+       if(!validEmail){
+        errorMessage += "| Invalid email"+" " ;
+        errorFlag = true;
+       }
+
       if (speaker.contact.toString().length != 10) {
         errorMessage += "| Invalid contact"+" ";
         errorFlag = true;
