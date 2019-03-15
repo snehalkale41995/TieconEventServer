@@ -9,7 +9,7 @@ const { AttendeeCounts} = require("../models/attendeeCount");
 const _ = require("lodash");
 const { AppConfig } = require("../constant/appConfig");
 
-router.post("/:eventId", async (req, res) => {
+router.post("/post/:eventId", async (req, res) => {
   var speakerList = [], speakerLength,
       speakerObj,
       countDetails,
@@ -20,9 +20,8 @@ router.post("/:eventId", async (req, res) => {
   try {
     speakerList = req.body;
     speakerLength = speakerList.length;
-    countDetails = await getAttendeeCount(eventId);
+    countDetails = await getSpeakerCount(eventId);
     speakerCount = countDetails.speakerCount + 1;
-   
     for (var i = 0; i < speakerList.length; i++) {
        speakerObj = {...speakerList[i]};
        speakerObj.event = eventId;
@@ -34,6 +33,7 @@ router.post("/:eventId", async (req, res) => {
        speakerObj.roleName = "Speaker";
        speakerObj.attendeeLabel = "SPE";
        speakerObj.attendeeCount = speakerCount;
+       speakerObj.dateCreated = new Date();
       const speaker = new Speaker(
         _.pick(speakerObj, [
           "firstName",
@@ -66,16 +66,14 @@ router.post("/:eventId", async (req, res) => {
       );
       speakerCount++;
     }
-     await updateAttendeeCount(eventId, speakerLength, countDetails);
-    //  res.json({ success : true });
+     await updateSpeakerCount(eventId, speakerLength, countDetails);
     res.status(200).json({success : true});
   } catch (error) {
-   // res.send(error.message);
     res.status(500).json({success: false});
   }
 });
 
- async function getAttendeeCount (eventId){
+ async function getSpeakerCount (eventId){
    try {
     const count = await AttendeeCounts.find()
       .where("event")
@@ -86,7 +84,7 @@ router.post("/:eventId", async (req, res) => {
   }
 }
 
- async function updateAttendeeCount (eventId, speakerLength, countDetails ){
+ async function updateSpeakerCount (eventId, speakerLength, countDetails ){
    var speakerCount, totalCount, speakerObj = {};
     try {
     speakerObj = {
@@ -105,5 +103,35 @@ router.post("/:eventId", async (req, res) => {
   // console.log("errrr",error)
   }
 }
+
+router.post("/validate", async (req, res) => {
+  try {
+    let speakerList = req.body;
+    let userList = [];
+    let errorFlag = false;
+    for (var i = 0; i < speakerList.length; i++) {
+      speaker = { ...speakerList[i] };
+      let errorMessage = "";
+      let userExists = await Attendee.findOne({ email: speaker.email });
+      let speakerExists = await Speaker.findOne({ email: speaker.email });
+      
+      if (userExists || speakerExists) {
+        errorMessage += "| Email Id already exists"+" " ;
+        errorFlag = true;
+      }
+      if (speaker.contact.toString().length != 10) {
+        errorMessage += "| Invalid contact"+" ";
+        errorFlag = true;
+      }
+      if (errorFlag === true) speaker.errorMessage = errorMessage;
+      else speaker.errorMessage = "";
+      userList.push(speaker);
+    }
+    if (errorFlag) res.status(200).json({ success: false, userList: userList });
+    else res.status(200).json({ success: true, userList: userList });
+  } catch (error) {
+      res.status(200).json({success : false});
+  }
+});
 
 module.exports = router;
