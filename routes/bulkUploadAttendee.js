@@ -17,6 +17,7 @@ router.post("/post/:eventId", async (req, res) => {
     attendeeLength,
     attendeeObj,
     countDetails,
+    eventdetails,
     password,
     attendeeCount = 0,
     totalCount = 0,
@@ -26,6 +27,7 @@ router.post("/post/:eventId", async (req, res) => {
     attendeeLength = attendeeList.length;
     countDetails = await getAttendeeCount(eventId);
     attendeeCount = countDetails.attendeeCount + 1;
+    eventdetails = countDetails.event;
 
     for (var i = 0; i < attendeeList.length; i++) {
       attendeeObj = { ...attendeeList[i] };
@@ -35,12 +37,12 @@ router.post("/post/:eventId", async (req, res) => {
       attendeeObj.facebookProfileURL = "";
       attendeeObj.linkedinProfileURL = "";
       attendeeObj.twitterProfileURL = "";
-      attendeeObj.isEmail = "true";
       attendeeObj.roleName = attendeeObj.profileName;
       attendeeObj.attendeeLabel = attendeeObj.profileName
         .substring(0, 3)
         .toUpperCase();
       attendeeObj.attendeeCount = attendeeCount;
+      attendeeObj.dateCreated = new Date();
       const attendee = new Attendee(
         _.pick(attendeeObj, [
           "firstName",
@@ -57,28 +59,23 @@ router.post("/post/:eventId", async (req, res) => {
           "profileImageURL",
           "facebookProfileURL",
           "linkedinProfileURL",
-          "twitterProfileURL",
-          "isEmail"
+          "twitterProfileURL"
         ])
       );
       let name = attendeeObj.firstName + " " + attendeeObj.lastName;
       const result = await attendee.save();
-      const attendeeDetails = await Attendee.findById(result._id).populate(
-        "event"
-      );
+      
       await sendPasswordViaEmail(
         attendeeObj.password,
         attendeeObj.email,
         name,
-        attendeeDetails.event
+        eventdetails
       );
       attendeeCount++;
     }
     await updateAttendeeCount(eventId, attendeeLength, countDetails);
-    //  res.json({ success : true });
     res.status(200).json({ success: true });
   } catch (error) {
-    // res.send(error.message);
     res.status(404).json({ success: false });
   }
 });
@@ -87,7 +84,7 @@ async function getAttendeeCount(eventId) {
   try {
     const count = await AttendeeCounts.find()
       .where("event")
-      .equals(eventId);
+      .equals(eventId).populate("event");
     return count[0];
   } catch (error) {
     res.send(error.message);
@@ -118,12 +115,13 @@ router.post("/validate", async (req, res) => {
     let attendeeList = req.body,
       userList = [];
     attendeeLength = attendeeList.length;
-    let errorFlag = false;
+    let errorFlag = false, validEmail;
     for (var i = 0; i < attendeeList.length; i++) {
       attendee = { ...attendeeList[i] };
       let errorMessage = "", profileExits, profileList, profiles, profileName;
       let userExists = await Attendee.findOne({ email: attendee.email });
       let speakerExists = await Speaker.findOne({ email: attendee.email });
+      validEmail = attendee.email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
       profileName = attendee.profileName;
       profileList = await ProfileList.find();
       profiles = profileList[0].profiles;
@@ -132,14 +130,22 @@ router.post("/validate", async (req, res) => {
         errorMessage += "| Email Id already exists"+" " ;
         errorFlag = true;
       }
+
+       if(!validEmail){
+        errorMessage += "| Invalid email"+" " ;
+        errorFlag = true;
+       }
+
        if(profiles.indexOf(profileName) === -1){
         errorMessage += "| Invalid profile"+" ";
         errorFlag = true;
        }
+
       if (attendee.contact.toString().length != 10) {
         errorMessage += "| Invalid contact"+" ";
         errorFlag = true;
       }
+
       if (errorFlag === true) attendee.errorMessage = errorMessage;
       else attendee.errorMessage = "";
 

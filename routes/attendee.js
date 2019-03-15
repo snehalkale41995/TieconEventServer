@@ -91,6 +91,7 @@ router.post("/", async (req, res) => {
         "attendeeLabel",
         "attendeeCount",
         "briefInfo",
+        "dateCreated",
         "profileImageURL",
         "event"
       ])
@@ -135,7 +136,6 @@ router.post("/inform", async (req, res) => {
           "facebookProfileURL",
           "linkedinProfileURL",
           "twitterProfileURL",
-          "isEmail",
           "event"
         ]),
         { new: true }
@@ -189,7 +189,7 @@ router.post("/new", upload.single("profileImageURL"), async (req, res) => {
         "facebookProfileURL",
         "linkedinProfileURL",
         "twitterProfileURL",
-        "isEmail",
+        "dateCreated",
         "event"
       ])
     );
