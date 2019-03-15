@@ -17,6 +17,7 @@ router.post("/post/:eventId", async (req, res) => {
     attendeeLength,
     attendeeObj,
     countDetails,
+    eventdetails,
     password,
     attendeeCount = 0,
     totalCount = 0,
@@ -26,6 +27,7 @@ router.post("/post/:eventId", async (req, res) => {
     attendeeLength = attendeeList.length;
     countDetails = await getAttendeeCount(eventId);
     attendeeCount = countDetails.attendeeCount + 1;
+    eventdetails = countDetails.event;
 
     for (var i = 0; i < attendeeList.length; i++) {
       attendeeObj = { ...attendeeList[i] };
@@ -62,22 +64,18 @@ router.post("/post/:eventId", async (req, res) => {
       );
       let name = attendeeObj.firstName + " " + attendeeObj.lastName;
       const result = await attendee.save();
-      const attendeeDetails = await Attendee.findById(result._id).populate(
-        "event"
-      );
+      
       await sendPasswordViaEmail(
         attendeeObj.password,
         attendeeObj.email,
         name,
-        attendeeDetails.event
+        eventdetails
       );
       attendeeCount++;
     }
     await updateAttendeeCount(eventId, attendeeLength, countDetails);
-    //  res.json({ success : true });
     res.status(200).json({ success: true });
   } catch (error) {
-    // res.send(error.message);
     res.status(404).json({ success: false });
   }
 });
@@ -86,7 +84,7 @@ async function getAttendeeCount(eventId) {
   try {
     const count = await AttendeeCounts.find()
       .where("event")
-      .equals(eventId);
+      .equals(eventId).populate("event");
     return count[0];
   } catch (error) {
     res.send(error.message);

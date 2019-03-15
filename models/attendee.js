@@ -169,7 +169,7 @@ async function sendPasswordViaEmail(password, email, name, eventInfo) {
       "</span><br/><br/>" +
       "<p style='color:#000;'>Warm Regards,<br/>Team TieCon</p>"
   };
-  transporter.sendMail(mailOptions);
+   await transporter.sendMail(mailOptions);
 }
 
 exports.Attendee = Attendee;
