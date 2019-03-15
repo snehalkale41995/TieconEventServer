@@ -40,6 +40,7 @@ router.post("/post/:eventId", async (req, res) => {
         .substring(0, 3)
         .toUpperCase();
       attendeeObj.attendeeCount = attendeeCount;
+      attendeeObj.dateCreated = new Date();
       const attendee = new Attendee(
         _.pick(attendeeObj, [
           "firstName",
