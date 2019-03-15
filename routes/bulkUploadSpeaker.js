@@ -13,6 +13,7 @@ router.post("/post/:eventId", async (req, res) => {
   var speakerList = [], speakerLength,
       speakerObj,
       countDetails,
+      eventdetails,
       password,
       speakerCount=0,
       totalCount=0,
@@ -22,6 +23,8 @@ router.post("/post/:eventId", async (req, res) => {
     speakerLength = speakerList.length;
     countDetails = await getSpeakerCount(eventId);
     speakerCount = countDetails.speakerCount + 1;
+    eventdetails = countDetails.event;
+
     for (var i = 0; i < speakerList.length; i++) {
        speakerObj = {...speakerList[i]};
        speakerObj.event = eventId;
@@ -55,14 +58,12 @@ router.post("/post/:eventId", async (req, res) => {
       );
       let name = speakerObj.firstName + " " + speakerObj.lastName;
       const result = await speaker.save();
-      const speakerDetails = await Speaker.findById(result._id).populate(
-        "event"
-      );
+      
       await sendPasswordViaEmail(
         speakerObj.password,
         speakerObj.email,
         name,
-        speakerDetails.event
+        eventdetails
       );
       speakerCount++;
     }
@@ -77,7 +78,7 @@ router.post("/post/:eventId", async (req, res) => {
    try {
     const count = await AttendeeCounts.find()
       .where("event")
-      .equals(eventId);
+      .equals(eventId).populate("event");;
       return count[0];
   } catch (error) {
     res.send(error.message);
